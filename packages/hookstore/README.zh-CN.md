@@ -3,8 +3,8 @@
 # hookstore
 
 [![NPM version](https://img.shields.io/npm/v/hookstore.svg?style=flat)](https://npmjs.org/package/hookstore)
-[![Build Status](https://img.shields.io/travis/react-kit/hookstore.svg?style=flat)](https://travis-ci.org/chemdemo/hookstore)
-[![Coverage Status](https://img.shields.io/coveralls/react-kit/hookstore.svg?style=flat)](https://coveralls.io/r/chemdemo/hookstore)
+[![Build Status](https://img.shields.io/travis/react-kit/hookstore.svg?style=flat)](https://travis-ci.org/react-kit/hookstore)
+[![Coverage Status](https://img.shields.io/coveralls/react-kit/hookstore.svg?style=flat)](https://coveralls.io/r/react-kit/hookstore)
 [![NPM downloads](http://img.shields.io/npm/dm/hookstore.svg?style=flat)](https://npmjs.org/package/hookstore)
 
 基于React Hooks（useContext）的轻量级状态管理方案。
@@ -305,4 +305,4 @@ $ cd examples/[folder] && npm run install && npm start
 
 ## License
 
-MIT © [chemdemo](https://github.com/chemdemo)
+MIT

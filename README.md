@@ -3,8 +3,8 @@ English|[简体中文](./README.zh-CN.md)
 # hookstore
 
 [![NPM version](https://img.shields.io/npm/v/hookstore.svg?style=flat)](https://npmjs.org/package/hookstore)
-[![Build Status](https://img.shields.io/travis/react-kit/hookstore.svg?style=flat)](https://travis-ci.org/chemdemo/hookstore)
-[![Coverage Status](https://img.shields.io/coveralls/react-kit/hookstore.svg?style=flat)](https://coveralls.io/r/chemdemo/hookstore)
+[![Build Status](https://img.shields.io/travis/react-kit/hookstore.svg?style=flat)](https://travis-ci.org/react-kit/hookstore)
+[![Coverage Status](https://img.shields.io/coveralls/react-kit/hookstore.svg?style=flat)](https://coveralls.io/r/react-kit/hookstore)
 [![NPM downloads](http://img.shields.io/npm/dm/hookstore.svg?style=flat)](https://npmjs.org/package/hookstore)
 
 React Hooks (useContext) based and lightweight state manage library.
@@ -303,4 +303,4 @@ then open <http://localhost:3000> in your web browser.
 
 ## License
 
-MIT © [chemdemo](https://github.com/chemdemo)
+MIT

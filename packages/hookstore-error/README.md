@@ -1,6 +1,11 @@
 # hookstore-error
 
-error handler middeware for [hookstore](https://github.com/chemdemo/hookstore.git)
+[![NPM version](https://img.shields.io/npm/v/hookstore-error.svg?style=flat)](https://npmjs.org/package/hookstore-error)
+[![Build Status](https://img.shields.io/travis/react-kit/hookstore.svg?style=flat)](https://travis-ci.org/react-kit/hookstore)
+[![Coverage Status](https://img.shields.io/coveralls/react-kit/hookstore.svg?style=flat)](https://coveralls.io/r/react-kit/hookstore)
+[![NPM downloads](http://img.shields.io/npm/dm/hookstore-error.svg?style=flat)](https://npmjs.org/package/hookstore-error)
+
+error handler middeware for [hookstore](https://github.com/react-kit/hookstore.git)
 
 ## Install
 
