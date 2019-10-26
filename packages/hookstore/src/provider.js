@@ -8,7 +8,6 @@ import React, {
   useState,
   useDebugValue,
 } from 'react';
-import { diff } from 'deep-diff';
 import invariant from 'invariant';
 import clonedeep from 'lodash.clonedeep';
 
@@ -43,8 +42,6 @@ export function Provider({ model, models, children }) {
 function StoreProvider({ model, children }) {
   const { namespace, state: initialState = {}, actions = {} } = model;
   const [state, dispatch] = useState(initialState);
-  // for data diff
-  const stateRef = useRef(null);
   // const listenRef = useRef([]);
   // const subscribe = useCallback(listener => {
   //   listenRef.current.push(listener);
@@ -67,15 +64,18 @@ function StoreProvider({ model, children }) {
     Context.displayName = namespace;
     ContextMap.set(namespace, Context);
   }
-  // update state in Context
-  Context._currentValue.state = state;
 
-  useMemo(() => {
-    if (!getState(namespace)) {
-      stateRef.current = clonedeep(initialState);
-      StateRefMap.set(namespace, stateRef);
-    }
-  }, [namespace, initialState]);
+  // update state in Context after every re-render
+  useEffect(() => {
+    Context._currentValue.state = state;
+  });
+
+  // for data diff
+  const stateRef = useRef(null);
+  if (!getState(namespace)) {
+    stateRef.current = clonedeep(initialState);
+    StateRefMap.set(namespace, stateRef);
+  }
 
   useEffect(() => {
     // clean
