@@ -109,6 +109,5 @@ export function useStore(namespace, selector) {
   const { state, actions } = useContext(Context);
   const selectedState = isFn ? selector(state) : state;
 
-  return [selectedState, actions];
-  // return useMemo(() => [selectedState, actions], [selectedState, actions]);
+  return useMemo(() => [selectedState, actions], [selectedState, actions]);
 }
