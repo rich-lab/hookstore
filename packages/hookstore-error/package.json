@@ -1,0 +1,36 @@
+{
+  "name": "hookstore-error",
+  "version": "0.1.1",
+  "description": "simple error handler middleware for hookstore",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "types": "lib/index.d.ts",
+  "sideEffects": false,
+  "dependencies": {
+    "@babel/runtime": "^7.0.0",
+    "hookstore": "^0.1.0"
+  },
+  "keywords": [
+    "hookstore",
+    "hookstore middleware",
+    "hookstore error middleware"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/react-kit/hookstore"
+  },
+  "homepage": "https://github.com/react-kit/hookstore",
+  "bugs": {
+    "url": "https://github.com/react-kit/hookstore/issues"
+  },
+  "authors": [
+    "chemdemo <yangdemo@gmail.com> (https://github.com/chemdemo)"
+  ],
+  "files": [
+    "lib",
+    "es",
+    "src",
+    "README.md"
+  ],
+  "license": "MIT"
+}

@@ -1,0 +1,9 @@
+node_modules
+dist
+scripts
+coverage
+*.js.map
+*.d.ts
+
+!.eslintrc.js
+!.jest.config.js

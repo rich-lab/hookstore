@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "module": "esnext",
+    "target": "esnext",
+    "lib": ["dom", "es2017"],
+    "jsx": "preserve",
+    "declaration": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true
+  },
+  "exclude": [
+    "examples",
+    "node_modules",
+    "**/node_modules",
+    "**/lib",
+    "**/es",
+    "**/test"
+  ]
+}

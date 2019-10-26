@@ -1,0 +1,44 @@
+{
+  "name": "hookstore",
+  "version": "0.1.4",
+  "description": "React useContext Hook based and lightweight state manage library.",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "types": "index.d.ts",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/react-kit/hookstore"
+  },
+  "homepage": "https://github.com/react-kit/hookstore",
+  "bugs": {
+    "url": "https://github.com/react-kit/hookstore/issues"
+  },
+  "authors": [
+    "chemdemo <yangdemo@gmail.com> (https://github.com/chemdemo)"
+  ],
+  "keywords": [
+    "react",
+    "hooks",
+    "state manage",
+    "hookstore"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@babel/runtime": "^7.0.0",
+    "deep-diff": "^1.0.2",
+    "invariant": "^2.2.4",
+    "is-plain-object": "^3.0.0",
+    "lodash.clonedeep": "^4.5.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "files": [
+    "lib",
+    "es",
+    "src",
+    "index.d.ts"
+  ]
+}

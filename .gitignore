@@ -1,0 +1,12 @@
+*~
+*.swp
+.DS_Store
+node_modules
+lib
+es
+coverage
+subscribe.js
+lerna-debug.log
+npm-debug.log
+npm-debug.log*
+yarn-error.log*

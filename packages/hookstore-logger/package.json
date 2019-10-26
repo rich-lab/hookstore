@@ -1,0 +1,40 @@
+{
+  "name": "hookstore-logger",
+  "version": "0.1.2",
+  "description": "simple logger middleware for hookstore",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "types": "lib/index.d.ts",
+  "sideEffects": false,
+  "dependencies": {
+    "@babel/runtime": "^7.0.0",
+    "@types/deep-diff": "^1.0.0",
+    "@types/lodash.clonedeep": "^4.5.6",
+    "deep-diff": "^1.0.2",
+    "hookstore": "^0.1.0",
+    "lodash.clonedeep": "^4.5.0"
+  },
+  "files": [
+    "lib",
+    "es",
+    "src",
+    "README.md"
+  ],
+  "keywords": [
+    "hookstore",
+    "hookstore middleware",
+    "hookstore logger"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/react-kit/hookstore"
+  },
+  "homepage": "https://github.com/react-kit/hookstore",
+  "bugs": {
+    "url": "https://github.com/react-kit/hookstore/issues"
+  },
+  "authors": [
+    "chemdemo <yangdemo@gmail.com> (https://github.com/chemdemo)"
+  ],
+  "license": "MIT"
+}
