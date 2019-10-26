@@ -299,7 +299,6 @@ module.exports = function(webpackEnv) {
         // 'hookstore': path.resolve('../../packages/hookstore'),
         // 'hookstore-error': path.resolve('../../packages/hookstore-error'),
         // 'hookstore-logger': path.resolve('../../packages/hookstore-logger'),
-        '@packages': path.resolve('../../packages'),
       },
       plugins: [
         // Adds support for installing with Plug'n'Play, leading to faster installs and adding
