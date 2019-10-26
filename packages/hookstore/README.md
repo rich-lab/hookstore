@@ -13,11 +13,11 @@ Try it on [Codesandbox](https://codesandbox.io/s/hookstore-counter-wbdh1)!
 
 ## Features
 
-- Minimal(only 5 APIs) and familiar API, easy to learn and use(5 minutes about)
-- Concepts simplified(only one `action` and no `reducer`/`dispatch`/`effects` in Redux/dva), `action` is just normal function which support `async/await`
-- Centralized state management and multiple model support, `state` inside `action` and `middleware` is mutatable for easy understanding(while immutatable inside components)
-- Built-in async status: Listening `pending` and `error` status of async action and update to DOM in real time by custom hook if needed
-- Middlewares system, similar with [koa middleware](https://github.com/koajs/koa#middleware)
+- Minimal(only 5 APIs) and familiar API, easy to learn and use(5 minutes about).
+- Developer friendly, no `reducer`/`dispatch`/`effects` in Redux/dva, only `action` and it's just normal function which support `async/await`.
+- Centralized state management and multiple model support, `state` inside `action`(and `middleware`)is mutatable for understanding while immutatable inside components.
+- Built-in async status: Listening `pending` and `error` status of async action and update to DOM in real time by custom hook if needed.
+- [koa](https://github.com/koajs/koa#middleware) style middlewares system
 
 ## Install
 

@@ -17,7 +17,7 @@
 - 概念极少，将Redux/dva中众多的概念（reducer、action、dispatch、effects）简化为action，异步支持async/await写法
 - 中心化的数据管理，model(s)定义类似[dva](https://github.com/dvajs/dva)，支持多model，action和中间件内部使用mutatable方式修改state易于理解（React组件内以immutatable方式访问state）
 - 通过自定义hook方式按需监听异步action的执行状态（pending和error），并及时将最新状态同步更新到DOM
-- 中间件系统，写法上与[koa中间件](https://github.com/koajs/koa#middleware)写法几乎一致
+- [koa](https://github.com/koajs/koa#middleware)风格的中间件系统
 
 ## 安装
 
