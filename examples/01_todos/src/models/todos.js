@@ -13,8 +13,8 @@ export default {
     list: [],
   },
   actions: {
-    async add(ctx, text) {
-      const { state } = ctx;
+    async add(text) {
+      const { state } = this.ctx;
 
       await wait(1000);
 
@@ -25,17 +25,17 @@ export default {
 
       return false;
     },
-    async delete(ctx, id) {
+    async delete(id) {
       await wait(1000);
 
-      const { state } = ctx;
+      const { state } = this.ctx;
 
       state.list = state.list.filter(item => item.id !== id);
     },
-    toggle(ctx, id) {
+    toggle(id) {
       // await wait(1000);
 
-      const { state } = ctx;
+      const { state } = this.ctx;
       const item = find(state.list, { id });
 
       if (item) {

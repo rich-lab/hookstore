@@ -9,13 +9,13 @@ export default {
     list: [],
   },
   actions: {
-    setLoading(ctx, loading) {
-      const { state } = ctx;
+    setLoading(loading) {
+      const { state } = this.ctx;
 
       state.loading = loading;
     },
-    async addItems(ctx, len) {
-      const { state, flush } = ctx;
+    async addItems(len) {
+      const { state, flush } = this.ctx;
 
       // if (state.loading) return;
 
@@ -28,8 +28,8 @@ export default {
       state.list = newList;
     },
 
-    async addByCount(ctx) {
-      const { state, getState, actions } = ctx;
+    async addByCount() {
+      const { state, getState, actions } = this.ctx;
       const count = getState('count', s => s.count);
       const countActions = getActions('count');
 
@@ -47,8 +47,8 @@ export default {
       countActions.add(1);
     },
 
-    nothing(ctx) {
-      console.log('------------>', ctx.state);
+    nothing() {
+      console.log('------------>', this.ctx.state);
     },
   },
 };

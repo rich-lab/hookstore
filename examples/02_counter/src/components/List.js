@@ -44,6 +44,7 @@ const ListMemo = React.memo(props => {
 function RenderList({ state, actions }) {
   const addItemsStatus = useStatus('list/addItems');
   const addByCountStatus = useStatus('list/addByCount');
+  const pending = addItemsStatus.pending || addByCountStatus.pending;
   const { list, loading } = state;
   const fetch = () => {
     if (addItemsStatus.pending || loading) return console.log('pls wait....');
@@ -56,11 +57,10 @@ function RenderList({ state, actions }) {
 
   return (
     <>
+      {pending && <div style={{ color: '#ffa35e' }}>loading....</div>}
       <ul>{list && list.map((item, i) => <li key={i}>{item.name}</li>)}</ul>
-      <button onClick={fetch}>Fetch list{addItemsStatus.pending ? '...' : ''}</button>
-      <button onClick={fetchByCount}>
-        Fetch list by count{addByCountStatus.pending ? '...' : ''}
-      </button>
+      <button onClick={fetch}>Fetch list</button>
+      <button onClick={fetchByCount}>Fetch list by count</button>
       <button onClick={actions.nothing}>nothing todo</button>
     </>
   );

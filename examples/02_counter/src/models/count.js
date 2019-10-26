@@ -7,24 +7,24 @@ export default {
     // },
   },
   actions: {
-    nothing(ctx) {
-      console.log('----------', ctx.state);
+    nothing() {
+      console.log('----------', this.ctx.state);
     },
-    add(ctx, n) {
-      const { state } = ctx;
+    add(n) {
+      const { state } = this.ctx;
 
       state.count += n;
     },
-    addx(ctx, n) {
-      const { state, actions } = ctx;
+    addx(n) {
+      const { state, actions } = this.ctx;
 
       state.count += n;
 
       actions.asyncAdd(n);
       // await actions.asyncAdd(n); // 如果需要同步执行，将addx函数改成aa即可，比saga的take('@end')好理解多了
     },
-    async asyncAdd(ctx, n) {
-      const { state } = ctx;
+    async asyncAdd(n) {
+      const { state } = this.ctx;
       // console.log('state before effect', state);
 
       await new Promise(resolve => {
@@ -35,8 +35,8 @@ export default {
 
       // console.log('state after effect', state);
     },
-    async printCountAsync(ctx) {
-      const { getState } = ctx;
+    async printCountAsync() {
+      const { getState } = this.ctx;
       const countState = getState('count');
       const count1 = countState.count;
 

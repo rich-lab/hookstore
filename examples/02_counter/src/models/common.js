@@ -11,14 +11,14 @@ export default {
     other: 'anything',
   },
   actions: {
-    setName(ctx, name) {
-      const { state } = ctx;
+    setName(name) {
+      const { state } = this.ctx;
 
       state.nested.name = name;
     },
 
-    async setLevel(ctx, level) {
-      const { state } = ctx;
+    async setLevel(level) {
+      const { state } = this.ctx;
 
       await new Promise(resolve => {
         setTimeout(resolve, 2000);
