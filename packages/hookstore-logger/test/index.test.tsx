@@ -6,7 +6,7 @@ import { act } from 'react-dom/test-utils';
 import mm from 'mm';
 
 import createLogger from '../src';
-import { Provider, applyMiddlewares, getActions } from '../../hookstore';
+import { Provider, applyMiddlewares, getActions } from 'hookstore';
 
 const model = {
   namespace: 'a',
@@ -112,7 +112,7 @@ describe('logger middleware', () => {
 
       await act(async () => await actions.change());
 
-      expect(groups[0]).toMatch(/\(in 0.00 ms\)/);
+      expect(groups[0]).toMatch(/\(in \d+\.\d{2} ms\)/);
     });
   });
 });
