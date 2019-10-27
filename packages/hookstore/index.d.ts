@@ -5,14 +5,14 @@ export type State = {};
 
 export type ActionFn = () => any | Promise<any>;
 
-// export type BoundActionHandler = (this: { ctx: Context }, ...args: any[]) => Promise<any>;
-export type BoundActionHandler = (...args: any[]) => Promise<any>;
+// export type BoundAction = (this: { ctx: Context }, ...args: any[]) => Promise<any>;
+export type BoundAction = (...args: any[]) => Promise<any>;
 
 // selector(state => state.count);
 export type StateSelector<S, O> = (state: S) => O;
 
 export interface Actions {
-  [ action: string ]: BoundActionHandler
+  [ action: string ]: BoundAction
 }
 
 export interface Context<S = State> {

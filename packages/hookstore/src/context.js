@@ -1,4 +1,5 @@
-import { diff } from 'deep-diff';
+// import { diff } from 'deep-diff';
+import isEqual from 'lodash.isequal';
 import clonedeep from 'lodash.clonedeep';
 import invariant from 'invariant';
 
@@ -63,7 +64,7 @@ export function doUpdate(namespace) {
   invariant(isPlainObject(latestState), 'state should be plain object!');
 
   // const hasChange = !equal(state, latestState);
-  const changes = diff(state, latestState);
+  const changes = !isEqual(state, latestState);
   // console.log('---hasChange----->', state, latestState, changes);
 
   if (changes) {
