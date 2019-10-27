@@ -6,10 +6,12 @@ English|[简体中文](./README.zh-CN.md)
 [![Build Status](https://img.shields.io/travis/react-kit/hookstore.svg?style=flat)](https://travis-ci.org/react-kit/hookstore)
 [![Coverage Status](https://img.shields.io/coveralls/react-kit/hookstore.svg?style=flat)](https://coveralls.io/r/react-kit/hookstore)
 [![NPM downloads](http://img.shields.io/npm/dm/hookstore.svg?style=flat)](https://npmjs.org/package/hookstore)
+![React](https://img.shields.io/npm/dependency-version/hookstore/peer/react?logo=react)
 
 React Hooks (useContext) based and lightweight state manage library.
 
-Try it on [Codesandbox](https://codesandbox.io/s/hookstore-counter-wbdh1)!
+## Try it on codesandbox
+[![Edit](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/hookstore-counter-wbdh1)
 
 ## Features
 

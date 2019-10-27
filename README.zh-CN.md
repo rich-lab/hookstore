@@ -6,10 +6,12 @@
 [![Build Status](https://img.shields.io/travis/react-kit/hookstore.svg?style=flat)](https://travis-ci.org/react-kit/hookstore)
 [![Coverage Status](https://img.shields.io/coveralls/react-kit/hookstore.svg?style=flat)](https://coveralls.io/r/react-kit/hookstore)
 [![NPM downloads](http://img.shields.io/npm/dm/hookstore.svg?style=flat)](https://npmjs.org/package/hookstore)
+![React](https://img.shields.io/npm/dependency-version/hookstore/peer/react?logo=react)
 
 基于React Hooks（useContext）的轻量级状态管理方案。
 
-查看在线demo [Codesandbox](https://codesandbox.io/s/hookstore-counter-wbdh1)。
+## 在线查看demo
+[![Edit](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/hookstore-counter-wbdh1)
 
 ## 特性
 
