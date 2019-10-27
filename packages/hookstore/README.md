@@ -17,7 +17,7 @@ Try it on [Codesandbox](https://codesandbox.io/s/hookstore-counter-wbdh1)!
 - Developer friendly, no `reducer`/`dispatch`/`effects` in Redux/dva, only `action` and it's just normal function which support `async/await`.
 - Centralized state management and multiple model support, `state` inside `action`(and `middleware`)is mutatable for understanding while immutatable inside components.
 - Built-in async status: Listening `pending` and `error` status of async action and update to DOM in real time by custom hook if needed.
-- [koa](https://github.com/koajs/koa#middleware) style middlewares system
+- [koa](https://github.com/koajs/koa#middleware) style middlewares system.
 
 ## Install
 
@@ -244,9 +244,9 @@ import Counter from './src/components/Counter';
 import List from './src/components/List';
 
 function Root() {
-  useLayoutEffect(() => {
+  useEffect(() => {
     // if (/localhost|\btest\b/.test(location.hostname)) {
-    applyMiddlewares([ errorMiddleware(), loggerMiddleware ]);
+    applyMiddlewares([ errorMiddleware(), loggerMiddleware({ showDiff: true }) ]);
     // }
   }, []);
 

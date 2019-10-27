@@ -247,9 +247,9 @@ import Counter from './src/components/Counter';
 import List from './src/components/List';
 
 function Root() {
-  useLayoutEffect(() => {
+  useEffect(() => {
     // if (/localhost|\btest\b/.test(location.hostname)) {
-    applyMiddlewares([ errorMiddleware(), loggerMiddleware ]);
+    applyMiddlewares([ errorMiddleware(), loggerMiddleware({ showDiff: true }) ]);
     // }
   }, []);
 

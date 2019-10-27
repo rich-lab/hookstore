@@ -5,7 +5,7 @@
 [![Coverage Status](https://img.shields.io/coveralls/react-kit/hookstore.svg?style=flat)](https://coveralls.io/r/react-kit/hookstore)
 [![NPM downloads](http://img.shields.io/npm/dm/hookstore-logger.svg?style=flat)](https://npmjs.org/package/hookstore-logger)
 
-redux-logger like middeware for [hookstore](https://github.com/react-kit/hookstore.git)
+redux-logger style middeware for [hookstore](https://github.com/react-kit/hookstore.git)
 
 ## Install
 
@@ -33,7 +33,7 @@ function App() {
 
 function Root = () => {
   const middlewares = [
-    logger,
+    logger({ showDiff: true, showTook: true }),
     // add other middlewares
   ];
 
