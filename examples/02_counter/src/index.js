@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
 // import { Provider, applyMiddlewares } from '@packages/hookstore';
@@ -21,8 +21,11 @@ function handleError(err) {
 function Root() {
   // applyMiddlewares([ loggerMiddleware ]);
 
-  useLayoutEffect(() => {
-    applyMiddlewares([errorMiddleware({ error: handleError }), loggerMiddleware]);
+  useEffect(() => {
+    applyMiddlewares([
+      errorMiddleware({ error: handleError }),
+      loggerMiddleware({ showDiff: true, showTook: true }),
+    ]);
   }, []);
 
   return (
