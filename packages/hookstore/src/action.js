@@ -10,8 +10,7 @@ import {
   useIsomorphicLayoutEffect,
   useForceRender,
 } from './utils';
-import { createCtx, doUpdate, getContext } from './context';
-import { getStore } from './store';
+import { createCtx, doUpdate, getContext, getStore } from './context';
 import { ACTION_STATUS_NAME as ASN, DEFAULT_STATUS } from './statusModel';
 import { Middlewares } from './middlewares';
 

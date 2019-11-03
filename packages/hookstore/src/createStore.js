@@ -1,7 +1,6 @@
 // import invariant from 'invariant';
 
 import { createActions } from './action';
-import { getContextValue } from './context';
 import { ACTION_STATUS_NAME as ASN, actionStatusModel } from './statusModel';
 import { isFunction } from './utils';
 
@@ -15,7 +14,7 @@ function select(state, selector) {
   return selected;
 }
 
-export function createStore(model) {
+export default function createStore(model) {
   const { name, state = {}, actions = {} } = model;
 
   if (name === ASN) return createStatusStore();
@@ -64,7 +63,8 @@ function createStatusStore() {
     let subscriptions = subscriptionStatus[actionWithName];
 
     if (!subscriptions) {
-      subscriptions = subscriptionStatus[actionWithName] = [];
+      subscriptionStatus[actionWithName] = [];
+      subscriptions = subscriptionStatus[actionWithName];
     }
 
     subscriptions.unshift(listener);
@@ -90,14 +90,4 @@ function createStatusStore() {
     subscribe,
     notify,
   };
-}
-
-// access store outside component
-export function getStore(name, selector) {
-  const store = getContextValue(name);
-  const { getState, actions } = store;
-  const value = getState(selector);
-
-  // return a tuple as useStore()
-  return [value, actions];
 }

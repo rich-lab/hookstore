@@ -21,7 +21,7 @@ import {
 } from './utils';
 import { actionStatusModel } from './statusModel';
 import { getContext, createContext, deleteContext } from './context';
-import { createStore } from './store';
+import createStore from './createStore';
 import { applyMiddlewares } from './middlewares';
 
 const StoreProvider = memo(({ model, children }) => {

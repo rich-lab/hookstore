@@ -1,7 +1,6 @@
 import React from 'react';
 import invariant from 'invariant';
 
-import { getStore } from './store';
 import { ACTION_STATUS_NAME as ASN } from './statusModel';
 import { isFunction } from './utils';
 
@@ -24,7 +23,7 @@ export function deleteContext(name) {
   return ContextMap.delete(name);
 }
 
-// get store
+// get original store from Context
 export function getContextValue(name) {
   const Context = getContext(name);
 
@@ -34,6 +33,16 @@ export function getContextValue(name) {
   );
 
   return Context._currentValue;
+}
+
+// access store outside component
+export function getStore(name, selector) {
+  const store = getContextValue(name);
+  const { getState, actions } = store;
+  const value = getState(selector);
+
+  // return a tuple as useStore()
+  return [value, actions];
 }
 
 export function createCtx(name, action) {

@@ -1,5 +1,3 @@
-import { getContextValue } from './context';
-
 export const ACTION_STATUS_NAME = '@STATUS';
 export const DEFAULT_STATUS = { pending: false, error: null };
 
