@@ -2,8 +2,9 @@ import React from 'react';
 import { render, fireEvent, waitForElement, cleanup } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 
-import { getActions } from '../src/action';
+// import { getActions } from '../src/action';
 import { Provider, useStore } from '../src/provider';
+import { getStore } from '../src/context';
 import { applyMiddlewares } from '../src/middlewares';
 
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms || 1));
@@ -26,7 +27,7 @@ describe('#basic usage', () => {
   it('single model should work', async () => {
     const jestFn = jest.fn();
     const model = {
-      namespace: 'single',
+      name: 'single',
       state: { a: 0, b: 0 },
       actions: {
         addA() {
@@ -68,7 +69,7 @@ describe('#basic usage', () => {
     const jestFnB = jest.fn();
     const jestFnC = jest.fn();
     const modelA = {
-      namespace: 'a',
+      name: 'a',
       state: { a: 0 },
       actions: {
         addA() {
@@ -77,7 +78,7 @@ describe('#basic usage', () => {
       },
     };
     const modelB = {
-      namespace: 'b',
+      name: 'b',
       state: { b: 0 },
       actions: {
         addB() {
@@ -161,7 +162,7 @@ describe('#basic usage', () => {
   it('async action should work', async () => {
     const jestFn = jest.fn();
     const model = {
-      namespace: 'action',
+      name: 'action',
       state: { a: 0, b: 0 },
       actions: {
         addA() {
@@ -216,7 +217,7 @@ describe('#basic usage', () => {
 
   it('middlewares shoule work', async () => {
     const model = {
-      namespace: 'a',
+      name: 'a',
       state: { a: 0, arr: [] },
       actions: {
         addA() {
@@ -266,7 +267,7 @@ describe('#basic usage', () => {
 
   it('action return value shoule work', async () => {
     const model = {
-      namespace: 'a',
+      name: 'a',
       state: { a: 0 },
       actions: {
         withRet() {
@@ -298,7 +299,7 @@ describe('#basic usage', () => {
     
     render(<Test />);
 
-    const actions = getActions('a');
+    const [, actions] = getStore('a');
     let ret, asyncRet;
     await act(async () => ret = await actions.withRet());
     await act(async () => asyncRet = await actions.asyncWithRet());
@@ -312,7 +313,7 @@ describe('#basic usage', () => {
     let newName = '';
     let newLevel = 0;
     const model = {
-      namespace: 'complex',
+      name: 'complex',
       state: { 
         name: 'foo', 
         nested: {
@@ -328,8 +329,8 @@ describe('#basic usage', () => {
           this.ctx.state.name = name;
         },
         setGrade(value) {
-          const { getState } = this.ctx;
-          const nested = getState(s => s.nested);
+          const { getStore } = this.ctx;
+          const [ nested ] = getStore(s => s.nested);
 
           if (value >= 3) nested.level = 'normal';
           nested.grade.value = value;
@@ -396,7 +397,7 @@ describe('#basic usage', () => {
   it('state diff should work', async () => {
     const jestFn = jest.fn();
     const modelA = {
-      namespace: 'a',
+      name: 'a',
       state: {
         foo: {
           bar: 'aaa'
@@ -449,7 +450,7 @@ describe('#basic usage', () => {
     const jestFn1 = jest.fn();
     const jestFn2 = jest.fn();
     const model = {
-      namespace: 't',
+      name: 't',
       state: {
         a: 1,
         b: 10,
@@ -483,17 +484,20 @@ describe('#basic usage', () => {
       );
     };
     const { getByTestId } = render(<App />);
+    const [ , actions ] = getStore('t');
     let bNode = getByTestId('b');
 
     expect(bNode.textContent).toEqual('b:10');
     expect(jestFn1).toHaveBeenCalledTimes(1);
     expect(jestFn2).toHaveBeenCalledTimes(1);
 
-    fireEvent.click(getByTestId('a'));
-    bNode = await waitForElement(() => getByTestId('b'));
+    act(() => {
+      actions.setA();
+    });
 
     expect(bNode.textContent).toEqual('b:10');
-    expect(jestFn1).toHaveBeenCalledTimes(2);
+    expect(getStore('t', s => s.a)[0]).toEqual(2);
+    expect(jestFn1).toHaveBeenCalledTimes(1);
     expect(jestFn2).toHaveBeenCalledTimes(1);
   });
 
@@ -501,7 +505,7 @@ describe('#basic usage', () => {
     const jestFn1 = jest.fn();
     const jestFn2 = jest.fn();
     const model = {
-      namespace: 'a',
+      name: 'a',
       state: { a: 0 },
       actions: {
         add() { this.ctx.state.a += 1; },
@@ -530,21 +534,21 @@ describe('#basic usage', () => {
         </>
       );
     };
-    const Root = () => <Provider model={model}><App /></Provider>;
-    const { getByTestId } = render(<Root />);
+    
+    render(<Provider model={model}><App /></Provider>);
+
+    const [, actions ] = getStore('a');
 
     expect(jestFn1).toHaveBeenCalledTimes(1);
     expect(jestFn2).toHaveBeenCalledTimes(1);
 
-    fireEvent.click(getByTestId('a1'));
-    await waitForElement(() => getByTestId('a1'));
-
+    await act(async () => { await actions.add() });
+    expect(getStore('a', s => s.a)[0]).toEqual(1);
     expect(jestFn1).toHaveBeenCalledTimes(2);
     expect(jestFn2).toHaveBeenCalledTimes(2);
 
-    fireEvent.click(getByTestId('a2'));
-    await act(async () => await wait(20));
-
+    await act(async () => { await actions.asyncAdd() });
+    expect(getStore('a', s => s.a)[0]).toEqual(2);
     expect(jestFn1).toHaveBeenCalledTimes(3);
     expect(jestFn2).toHaveBeenCalledTimes(3);
   });
@@ -552,7 +556,7 @@ describe('#basic usage', () => {
   it('access state between models shoule work', async () => {
     let count = 0;
     const modelA = {
-      namespace: 'a',
+      name: 'a',
       state: { arr: [] },
       actions: {
         pushArr(item) {
@@ -561,12 +565,12 @@ describe('#basic usage', () => {
       }
     };
     const modelB = {
-      namespace: 'b',
+      name: 'b',
       state: { b: 0 },
       actions: {
         setB() {
-          const { state, getState } = this.ctx;
-          const { arr } = getState('a');
+          const { state, getStore } = this.ctx;
+          const [ arr ] = getStore('a', s => s.arr);
 
           state.b = arr.length;
         },
@@ -606,7 +610,7 @@ describe('#basic usage', () => {
 
   it('call action between actions should work', async () => {
     const countModel = {
-      namespace: 'count',
+      name: 'count',
       state: {
         count: 0
       },
@@ -667,7 +671,7 @@ describe('#basic usage', () => {
   it('flush should work', async () => {
     const jestFn = jest.fn();
     const modelList = {
-      namespace: 'list',
+      name: 'list',
       state: {
         loading: false,
         list: [],

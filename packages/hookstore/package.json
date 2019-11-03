@@ -1,7 +1,7 @@
 {
   "name": "hookstore",
   "version": "0.1.6",
-  "description": "React useContext Hook based and lightweight state manage library.",
+  "description": "React Hook based and lightweight state manage library.",
   "main": "lib/index.js",
   "module": "es/index.js",
   "types": "index.d.ts",
@@ -28,7 +28,6 @@
     "@babel/runtime": "^7.0.0",
     "invariant": "^2.2.4",
     "is-plain-object": "^3.0.0",
-    "lodash.clonedeep": "^4.5.0",
     "lodash.isequal": "^4.5.0"
   },
   "peerDependencies": {

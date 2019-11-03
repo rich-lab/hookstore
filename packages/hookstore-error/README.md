@@ -22,7 +22,7 @@ import { Provider, applyMiddlewares } from 'hookstore';
 import errorHandler from 'hookstore-error';
 
 const model = {
-  namespace: 'foo',
+  name: 'foo',
   state: {},
   actions: {},
 };
@@ -49,9 +49,9 @@ Custom error handle function for yourself:
 
 ```javascript
 function handleError(err) {
-  const { namespace, action, state } = this.ctx;
+  const { name, action, state } = this.ctx;
 
-  console.error(`${namespace}/${action} error`, err);
+  console.error(`${name}/${action} error`, err);
 }
 
 const middlewares = [

@@ -7,10 +7,12 @@
 
 redux-logger style middeware for [hookstore](https://github.com/react-kit/hookstore.git)
 
+![hookstore-logger](docs/screenshot.png)
+
 ## Install
 
 ```bash
-$ npm install hookstore-logger
+$ npm install hookstore-logger -D
 # or
 $ yarn add hookstore-logger
 ```
@@ -22,7 +24,7 @@ import { Provider, applyMiddlewares } from 'hookstore';
 import logger from 'hookstore-logger';
 
 const model = {
-  namespace: 'foo',
+  name: 'foo',
   state: {},
   actions: {},
 };

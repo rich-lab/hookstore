@@ -1,13 +1,6 @@
 import { Provider, useStore } from './provider';
-// import { useSubscribe } from './subscribe';
-import { useStatus, getActions } from './action';
+import { useStatus } from './action';
+import { getStore } from './context';
 import { applyMiddlewares } from './middlewares';
 
-export {
-  Provider,
-  useStore,
-  useStatus,
-  // useSubscribe,
-  getActions,
-  applyMiddlewares,
-};
+export { Provider, useStore, useStatus, getStore, applyMiddlewares };

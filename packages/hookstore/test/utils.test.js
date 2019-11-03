@@ -1,7 +1,7 @@
 // import expect from 'expect';
 // import { renderHook, act } from '@testing-library/react-hooks';
 import * as rtl from '@testing-library/react';
-import { compose, checkModels, useForceRender } from '../src/util';
+import { compose, checkModels, useForceRender } from '../src/utils';
 
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms || 1));
 
@@ -44,7 +44,7 @@ describe('util', () => {
       };
 
       const context = {
-        namespace: 'test',
+        name: 'test',
         action: 'compose',
         state: {
           arr: [],
@@ -80,7 +80,7 @@ describe('util', () => {
 
   describe('#checkModel', () => {
     const model = {
-      namespace: 'a',
+      name: 'a',
       state: {},
       actions: {},
     };
@@ -91,20 +91,18 @@ describe('util', () => {
       expect(() => checkModels({ model: [] })).toThrow(/should be plain object/);
       expect(() => checkModels({ models: {} })).toThrow(/models should be array/);
       expect(() => checkModels({ models: [] })).toThrow(/at last one model/);
-      expect(() => checkModels({ models: [{}] })).toThrow(/namespace is required/);
+      expect(() => checkModels({ models: [{}] })).toThrow(/name is required/);
       expect(() => checkModels({ models: [() => {}] })).toThrow(/should be plain object/);
-      expect(() => checkModels({ models: [{ namespace: '' }] })).toThrow(/namespace is required/);
-      expect(() => checkModels({ models: [{ namespace: 1 }] })).toThrow(
-        /namespace should be string/,
-      );
-      expect(() => checkModels({ models: [{ namespace: 'a', state: [] }] })).toThrow(
+      expect(() => checkModels({ models: [{ name: '' }] })).toThrow(/name is required/);
+      expect(() => checkModels({ models: [{ name: 1 }] })).toThrow(/name should be string/);
+      expect(() => checkModels({ models: [{ name: 'a', state: [] }] })).toThrow(
         /state should be plain object/,
       );
-      expect(() => checkModels({ models: [{ namespace: 'a', actions: [] }] })).toThrow(
+      expect(() => checkModels({ models: [{ name: 'a', actions: [] }] })).toThrow(
         /actions should be plain object/,
       );
 
-      expect(() => checkModels({ model: { namespace: 'a' } })).not.toThrow();
+      expect(() => checkModels({ model: { name: 'a' } })).not.toThrow();
       expect(() => checkModels({ model })).not.toThrow();
       expect(() => checkModels({ models: [model] })).not.toEqual();
       expect(() => checkModels({ models: [model], model })).not.toEqual();

@@ -5,11 +5,11 @@ import { act } from 'react-dom/test-utils';
 // import * as rtl from '@testing-library/react'
 import mm from 'mm';
 
-import createLogger from '../src';
-import { Provider, applyMiddlewares, getActions } from 'hookstore';
+import createLogger, { Options } from '../src';
+import { Provider, applyMiddlewares, getStore } from 'hookstore';
 
 const model = {
-  namespace: 'a',
+  name: 'a',
   state: { n: 0, arr: [] },
   actions: {
     change() {
@@ -38,7 +38,7 @@ describe('logger middleware', () => {
     logs = [];
   }
 
-  function renderApp(options) {
+  function renderApp(options?: Options) {
     const Test = () => {
       applyMiddlewares([ createLogger(options) ]);
   
@@ -46,7 +46,7 @@ describe('logger middleware', () => {
     };
     render(<Test />);
   
-    actions = getActions('a');
+    [, actions] = getStore('a');
   }
 
   mm(console, 'group', (...args) => {

@@ -1,75 +1,88 @@
-// import { diff } from 'deep-diff';
-import isEqual from 'lodash.isequal';
-import clonedeep from 'lodash.clonedeep';
+import React from 'react';
 import invariant from 'invariant';
 
-import { getState } from './stateRef';
-import { isFunction, isPlainObject } from './util';
+import { ACTION_STATUS_NAME as ASN } from './statusModel';
+import { isFunction } from './utils';
 
-export const ContextMap = new Map();
+const ContextMap = new Map();
 
-// access Context
-export function getContextValue(namespace) {
-  const Context = ContextMap.get(namespace);
+export function getContext(name) {
+  return ContextMap.get(name) || null;
+}
+
+export function createContext(name, store) {
+  const Context = React.createContext(store);
+
+  Context.displayName = name;
+  ContextMap.set(name, Context);
+
+  return Context;
+}
+
+export function deleteContext(name) {
+  return ContextMap.delete(name);
+}
+
+// get original store from Context
+export function getContextValue(name) {
+  const Context = getContext(name);
 
   invariant(
     Context,
-    `model[${namespace}] has not created, please use <Provider model={model} /> first!`,
+    `store[${name}] has not created yield, please use <Provider model={model} /> as parent component first!`,
   );
 
   return Context._currentValue;
 }
 
-export function createCtx(namespace, action) {
-  return Object.create({
-    get namespace() {
-      return namespace;
+// access store outside component
+export function getStore(name, selector) {
+  const store = getContextValue(name);
+  const { getState, actions } = store;
+  const value = getState(selector);
+
+  // return a tuple as useStore()
+  return [value, actions];
+}
+
+export function createCtx(name, action) {
+  return {
+    // get model name
+    get name() {
+      return name;
     },
+    // get action name
     get action() {
       return action;
     },
+    // get current state
     get state() {
-      return getState(namespace);
+      // return getStore(name).getState();
+      return getStore(name)[0];
     },
+    // get current actions map
     get actions() {
-      return getContextValue(namespace).actions;
+      return getContextValue(name).actions;
+      // return getStore(name)[1];
     },
-    getState(ns, selector) {
-      // const sameNS = ns === namespace;
-      if (isFunction(ns)) {
-        selector = ns;
-        ns = namespace;
+    getStore(modelName, selector) {
+      if (isFunction(modelName)) {
+        selector = modelName;
+        modelName = name;
       }
 
-      // TODO:
-      // state should be immutable if ns not current namespace
-
-      return getState(ns || namespace, selector);
+      return getStore(modelName || name, selector);
     },
     // frush state and make components re-render!
-    flush() {
-      // console.log(`${namespace}/${action} [flush]`);
-      doUpdate(namespace);
+    flush(msg) {
+      if (msg) console.log(`[flush] ${name}/${action}`, msg);
+      doUpdate(name);
     },
-  });
+  };
 }
 
 // do update state
-export function doUpdate(namespace) {
-  // const prevState = getState(namespace);
-  const { state, dispatch } = getContextValue(namespace);
-  const latestState = getState(namespace);
-
-  // TODO: state key check
-  invariant(isPlainObject(latestState), 'state should be plain object!');
-
-  // const hasChange = !equal(state, latestState);
-  const changes = !isEqual(state, latestState);
-  // console.log('---hasChange----->', state, latestState, changes);
-
-  if (changes) {
-    // console.log('update >>', namespace);
-    // forceUpdate
-    dispatch(clonedeep(latestState));
-  }
+export function doUpdate(name, actionOrActionWithName) {
+  if (name !== ASN) getContextValue(name).notify();
+  else getContextValue(ASN).notify(actionOrActionWithName);
 }

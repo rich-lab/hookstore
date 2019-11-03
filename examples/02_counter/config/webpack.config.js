@@ -296,9 +296,9 @@ module.exports = function(webpackEnv) {
           'scheduler/tracing': 'scheduler/tracing-profiling',
         }),
         ...(modules.webpackAliases || {}),
-        // hookstore: path.resolve(process.cwd(), '../../packages/hookstore'),
-        // 'hookstore-error': path.resolve(process.cwd(), '../../packages/hookstore-error'),
-        // 'hookstore-logger': path.resolve(process.cwd(), '../../packages/hookstore-logger'),
+        hookstore: path.resolve(process.cwd(), '../../packages/hookstore'),
+        'hookstore-error': path.resolve(process.cwd(), '../../packages/hookstore-error'),
+        'hookstore-logger': path.resolve(process.cwd(), '../../packages/hookstore-logger'),
       },
       plugins: [
         // Adds support for installing with Plug'n'Play, leading to faster installs and adding

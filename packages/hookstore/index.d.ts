@@ -5,32 +5,45 @@ export type State = {};
 
 export type ActionFn = () => any | Promise<any>;
 
+export interface Model {
+  readonly name: string, // name of model
+  state?: State, // model state
+  actions: {
+    [action: string]: ActionFn,
+  },
+  // middlewares?: Middleware[],
+}
+
 // export type BoundAction = (this: { ctx: Context }, ...args: any[]) => Promise<any>;
 export type BoundAction = (...args: any[]) => Promise<any>;
-
-// selector(state => state.count);
-export type StateSelector<S, O> = (state: S) => O;
 
 export interface Actions {
   [ action: string ]: BoundAction
 }
 
-export interface Context<S = State> {
-  readonly namespace: string,
-  readonly action: string,
-  state: S,
-  actions: Actions,
-  getState: <O extends any>(namespace?: string, selector?: StateSelector<S, O>) => O,
-  flush: () => void,
-}
+// selector(state => state.count);
+export type StateSelector<S = State> = (state: S) => any;
 
-export interface Model {
-  readonly namespace: string,
-  state: State,
-  actions: {
-    [action: string]: ActionFn,
-  },
-  middlewares?: Middleware[],
+// export interface Store<S = State> {
+//   getState<O extends any>(selector?: StateSelector<S, O>): O;
+//   actions: Actions;
+// }
+
+export interface Context<S = State> {
+  // access current store's name
+  readonly name: string,
+  // access current action's name
+  readonly action: string,
+  // access the lastest state in current store
+  state: S,
+  // access the bound action collection of current store
+  actions: Actions,
+  // access the lastest state and actions of some other store
+  getStore: (name?: string, selector?: StateSelector<S>) => [ any, Actions ],
+  // getStore: (name?: string) => Store,
+  // getState: <V extends any>(name?: string, selector?: StateSelector<S, V>) => V,
+  // flush the changed state to DOM(inside action handler) before action run finished
+  flush: (msg?: string) => void,
 }
 
 export type Next = () => Promise<any>;
@@ -46,18 +59,18 @@ export type ProviderProps = {
 
 export const Provider: React.FC<PropsWithChildren<ProviderProps>>;
 
-export function useStore<S = State, O = any>(
-  namespace: string,
-  selector?: StateSelector<S, O>,
-): [ State, Actions ];
+export function useStore<S = State>(
+  name: string,
+  selector?: StateSelector<S>,
+): [ any, Actions ];
 
 export interface ActionStatus {
   error: null | Error,
   pending: boolean,
 }
 
-export function useStatus(actionWithNS: string): ActionStatus;
+export function useStatus(actionWithName: string): ActionStatus;
 
-export function getActions(namespace: string): Actions;
+export function getStore<S = State>(name: string, selector?: StateSelector<S>): [ any, Actions ];
 
 export function applyMiddlewares(middlewares: Middleware[]): void;

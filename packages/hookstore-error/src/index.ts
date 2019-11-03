@@ -11,12 +11,12 @@ export default (options: Option = {}): Middleware => {
     try {
       result = await next();
     } catch(e) {
-      // const { namespace, action } = ctx;
+      // const { name, action } = ctx;
       
       if (options.error) {
         options.error.call({ ctx, options }, e);
       } else {
-        // console.error(`[hookstore-error] ${namespace}/${action}\n`, e);
+        // console.error(`[hookstore-error] ${name}/${action}\n`, e);
         throw e;
       }
     }

@@ -1,8 +1,8 @@
 import { diff, Diff } from 'deep-diff';
-import clonedeep from 'lodash.clonedeep';
+// import clonedeep from 'lodash.clonedeep';
 import { Context, Next, State, Middleware } from 'hookstore';
 
-import { formatTime } from './utils';
+import { formatTime, tryClone } from './utils';
 import { defaultOptions, Options } from './defaults';
 
 interface ColorText<T> {
@@ -71,10 +71,12 @@ function titleFormatter(
 
 export type Options = Options;
 
-export default (options: Options = defaultOptions): Middleware => async (ctx: Context, next: Next) => {
+export default (options?: Options): Middleware => async (ctx: Context, next: Next) => {
+  options = options || defaultOptions;
+
   const { showDiff, showTook } = options;
-  const { namespace, action, state } = ctx;
-  const prevState = clonedeep(state);
+  const { name, action, state } = ctx;
+  const prevState = tryClone(state);
   const time = new Date();
   const greySty = 'color: gray; font-weight: lighter;';
   const headerCSS = ['color: inherit;', greySty, showTook ? greySty : ''];
@@ -84,7 +86,7 @@ export default (options: Options = defaultOptions): Middleware => async (ctx: Co
   const changes = diff(prevState, state);
   const took = Date.now() - time.getTime();
 
-  console.group(titleFormatter(`${namespace}/${action}`, time, took, options), ...headerCSS);
+  console.group(titleFormatter(`${name}/${action}`, time, took, options), ...headerCSS);
   console.log('%cprev state', 'color: #9E9E9E; font-weight: bold;', prevState);
 
   if (showDiff && changes) {

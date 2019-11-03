@@ -2,8 +2,9 @@ import React from 'react';
 import { render, fireEvent, waitForElement, cleanup } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 
-import { createActions, getActions, useStatus } from '../src/action';
+import { createActions, useStatus } from '../src/action';
 import { Provider, useStore } from '../src/provider';
+import { getStore } from '../src/context';
 
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms || 1));
 
@@ -39,7 +40,7 @@ describe('action', () => {
 
   describe('#useStatus', () => {
     const model = {
-      namespace: 'test',
+      name: 'test',
       state: {
         count: 0
       },
@@ -90,15 +91,15 @@ describe('action', () => {
       await act(async () => await wait(1000));
   
       expect(countDiv.textContent).toEqual('count:1');
-      expect(jestFn).toHaveBeenCalledTimes(4);
+      expect(jestFn).toHaveBeenCalledTimes(3);
       // expect(loadingDiv).toBeFalsy();
     });
   });
 
-  describe('#getActions', () => {
+  describe('#getStore', () => {
     it('should work', async () => {
       const model = {
-        namespace: 'test',
+        name: 'test',
         state: {
           count: 0
         },
@@ -121,7 +122,7 @@ describe('action', () => {
       };
   
       const CountBtn = () => {
-        const actions = getActions('test');
+        const [, actions] = getStore('test');
         
         expect(actions.add).toBeTruthy();
   
