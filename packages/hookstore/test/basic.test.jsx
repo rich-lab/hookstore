@@ -4,7 +4,7 @@ import { act } from 'react-dom/test-utils';
 
 // import { getActions } from '../src/action';
 import { Provider, useStore } from '../src/provider';
-import { getStore } from '../src/store';
+import { getStore } from '../src/context';
 import { applyMiddlewares } from '../src/middlewares';
 
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms || 1));

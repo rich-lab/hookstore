@@ -3,7 +3,7 @@ import { render, fireEvent, waitForElement, cleanup } from '@testing-library/rea
 import { act } from 'react-dom/test-utils';
 
 import { Provider, useStore } from '../src/provider';
-import { getStore } from '../src/store';
+import { getStore } from '../src/context';
 
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms || 1));
 const getItems = async (len) => {
