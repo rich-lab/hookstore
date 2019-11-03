@@ -2,12 +2,12 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 
 import errorHandler from '../src';
-import { Provider, useStore, applyMiddlewares, getActions } from '../../hookstore';
+import { Provider, useStore, applyMiddlewares, getStore } from '../../hookstore';
 
 describe('error middleware', () => {
   it('should capture action error', async () => {
     const model = {
-      namespace: 'a',
+      name: 'a',
       state: {},
       actions: {
         err() {
@@ -30,14 +30,14 @@ describe('error middleware', () => {
 
     render(<Test />);
 
-    const actions = getActions('a');
+    const [, actions] = getStore('a');
 
     await expect(actions.err()).rejects.toThrow(/some error/);
   });
 
   it('oprions.error should work', async () => {
     const model = {
-      namespace: 'a',
+      name: 'a',
       state: {},
       actions: {
         err() {
@@ -54,9 +54,9 @@ describe('error middleware', () => {
       const middlewares = [
         errorHandler({
           error(err) {
-            const { namespace, action } = this.ctx;
+            const { name, action } = this.ctx;
 
-            expect(namespace).toEqual('a');
+            expect(name).toEqual('a');
             expect(action).toEqual('err');
             expect(err.message).toEqual('some error');
             expect(err).toBeInstanceOf(Error);

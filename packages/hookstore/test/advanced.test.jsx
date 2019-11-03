@@ -3,7 +3,7 @@ import { render, fireEvent, waitForElement, cleanup } from '@testing-library/rea
 import { act } from 'react-dom/test-utils';
 
 import { Provider, useStore } from '../src/provider';
-import { getActions } from '../src/action';
+import { getStore } from '../src/store';
 
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms || 1));
 const getItems = async (len) => {
@@ -26,7 +26,7 @@ describe('#advanced usage', () => {
   
   it('call action between actions should work', async () => {
     const countModel = {
-      namespace: 'count',
+      name: 'count',
       state: {
         count: 0
       },
@@ -51,15 +51,14 @@ describe('#advanced usage', () => {
       }
     };
     const listModel = {
-      namespace: 'list',
+      name: 'list',
       state: {
         list: []
       },
       actions: {
         async addByCount() {
-          const { state, getState } = this.ctx;
-          const count = getState('count', s => s.count);
-          const countActions = getActions('count');
+          const { state, getStore } = this.ctx;
+          const [ count, countActions ] = getStore('count', s => s.count);
     
           if (count <= 0) throw new Error('count illegal');
           
@@ -101,6 +100,7 @@ describe('#advanced usage', () => {
       );
     };
     const { getByTestId } = render(<App />);
+    const [, { addByCount }] = getStore('list');
     let countNode = getByTestId('count');
     let listCountNode = getByTestId('list-count');
     let listNode = getByTestId('list');
@@ -110,7 +110,7 @@ describe('#advanced usage', () => {
     expect(listNode.textContent).toEqual('listLen:0');
 
     // @see https://github.com/facebook/jest/issues/3601
-    await expect(getActions('list').addByCount()).rejects.toMatchObject({ message: 'count illegal' });
+    await expect(addByCount()).rejects.toMatchObject({ message: 'count illegal' });
 
     fireEvent.click(getByTestId('addx'));
 
