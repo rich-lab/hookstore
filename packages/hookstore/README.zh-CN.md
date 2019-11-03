@@ -17,7 +17,7 @@
 
 - **轻量级**：基于原生Hooks API实现（且仅有5个API），易于学习上手，将Redux/dva中众多的概念（reducer、action、dispatch、effects）简化为action（异步action支持`async/await`写法）
 - **数据中心化管理**：model(s)定义类似[dva](https://github.com/dvajs/dva)，支持多model，action和中间件内部使用mutatable方式修改state易于理解（React组件内以immutatable方式访问state，遵循React单向数据流的设计理念）
-- **高性能**：useStore的设计参考了react-redux([useSelector](https://react-redux.js.org/api/hooks#useselector))，当state变更时只会刷新使用了useStore的组件，不会引起在Fiber tree上的其他节点re-render，且组件在re-render前会经过严格的diff检查，对[useContext引起的性能问题](https://github.com/facebook/react/issues/15156)做了充分的优化
+- **高性能**：useStore的设计参考了react-redux-hooks [useSelector](https://react-redux.js.org/api/hooks#useselector)，当state变更时只会刷新使用了useStore的组件，不会引起在Fiber tree上的其他节点re-render，且组件在re-render前会经过严格的diff检查，对[useContext引起的性能问题](https://github.com/facebook/react/issues/15156)做了充分的优化
 - **内置异步action状态监听hook**：按需监听异步action的执行状态（`pending`和`error`），并及时将最新状态同步更新到DOM，简化异步编程
 - **[koa](https://github.com/koajs/koa#middleware)风格的中间件系统**
 
