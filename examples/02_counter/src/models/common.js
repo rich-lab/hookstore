@@ -1,5 +1,5 @@
 export default {
-  namespace: 'common',
+  name: 'common',
   state: {
     nested: {
       name: 'react',

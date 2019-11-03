@@ -1,5 +1,5 @@
 export default {
-  namespace: 'count',
+  name: 'count',
   state: {
     count: 0,
     // foo: {

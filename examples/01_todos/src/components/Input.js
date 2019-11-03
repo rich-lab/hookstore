@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
-import { useStatus, getActions } from 'hookstore';
+import { useStatus, getStore } from 'hookstore';
 
 export default () => {
   const [text, setText] = useState('');
   const addStatus = useStatus('todos/add');
-  const actions = getActions('todos');
+  const [, actions] = getStore('todos');
   const addItem = async () => {
     if (addStatus.pending || !text) return;
 

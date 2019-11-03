@@ -1,9 +1,5 @@
-import { getActions } from 'hookstore';
-
-// select('count', s => s.count);
-
 export default {
-  namespace: 'list',
+  name: 'list',
   state: {
     loading: false,
     list: [],
@@ -15,7 +11,7 @@ export default {
       state.loading = loading;
     },
     async addItems(len) {
-      const { state, flush } = this.ctx;
+      const { state /*, flush*/ } = this.ctx;
 
       // if (state.loading) return;
 
@@ -29,9 +25,11 @@ export default {
     },
 
     async addByCount() {
-      const { state, getState, actions } = this.ctx;
-      const count = getState('count', s => s.count);
-      const countActions = getActions('count');
+      const { state /*, actions*/, getStore } = this.ctx;
+      // const { getState, actions: countActions } = getStore('count');
+      // const count = getState(s => s.count);
+
+      const [count, countActions] = getStore('count', s => s.count);
 
       // if (state.loading) return;
 

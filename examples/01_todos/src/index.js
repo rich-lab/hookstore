@@ -10,9 +10,9 @@ import todos from './models/todos';
 import App from './App';
 
 function handleError(err) {
-  const { namespace, action } = this.ctx;
+  const { name, action } = this.ctx;
 
-  console.error(`${namespace}/${action}`, err);
+  console.error(`${name}/${action}`, err);
 }
 
 function Root() {

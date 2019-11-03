@@ -8,7 +8,7 @@ function find(list, { id, text, status }) {
 }
 
 export default {
-  namespace: 'todos',
+  name: 'todos',
   state: {
     list: [],
   },
