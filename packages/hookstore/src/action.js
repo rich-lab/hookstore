@@ -1,45 +1,57 @@
-import { useContext, useDebugValue, useEffect } from 'react';
+import { useContext, useDebugValue, useRef } from 'react';
 import invariant from 'invariant';
 
-import { isPlainObject, compose, isPromise, isFunction, isString } from './util';
-import { ContextMap, createCtx, getContextValue, doUpdate } from './context';
-import { getState } from './stateRef';
-import { ACTION_STATUS_NAMESPACE, DEFAULT_STATUS } from './statusModel';
-// import { useSubscribe, publish } from './subscribe';
+import {
+  isPlainObject,
+  compose,
+  isPromise,
+  isFunction,
+  isString,
+  useIsomorphicLayoutEffect,
+  useForceRender,
+} from './utils';
+import { createCtx, doUpdate, getContext } from './context';
+import { getStore } from './store';
+import { ACTION_STATUS_NAME as ASN, DEFAULT_STATUS } from './statusModel';
 import { Middlewares } from './middlewares';
 
-function createAction(namespace, action, handler) {
-  // const context = createCtx(namespace, action);
+function createAction(name, action, handler) {
+  // const context = createCtx(name, action);
   const applyAction = async (ctx, args) => {
     // return await handler.apply({ ctx }, args);
-    const key = `${namespace}/${action}`;
-    const prevStatus = getState(ACTION_STATUS_NAMESPACE)[key];
+    const actionWithName = `${name}/${action}`;
+    const [prevStatus, actions] = getStore(ASN, s => s[actionWithName]);
     // let ret = handler(ctx, ...args);
     let ret = handler.apply({ ctx }, args);
 
-    if (isPromise(ret) && prevStatus) {
-      const notify = getActions(ACTION_STATUS_NAMESPACE).set;
+    if (prevStatus) {
+      if (isPromise(ret)) {
+        const setStatus = actions.set;
 
-      notify(key, { pending: true, error: null });
+        setStatus(actionWithName, { pending: true, error: null });
 
-      try {
-        ret = await ret;
-        notify(key, { pending: false, error: null });
-      } catch (e) {
-        notify(key, { error: e, pending: false });
-        throw e;
+        try {
+          ret = await ret;
+          setStatus(actionWithName, { pending: false, error: null });
+        } catch (e) {
+          setStatus(actionWithName, { error: e, pending: false });
+          throw e;
+        }
+      } else {
+        console.warn(`It's no need to add listener(s) for asynchronous action: ${actionWithName}`);
       }
     }
 
     return ret;
   };
   const boundAction = async (...args) => {
-    const ctx = createCtx(namespace, action);
+    const ctx = createCtx(name, action);
     const middlewares = Middlewares.slice();
     // call middlewares by queue
     const ret = await compose(middlewares)(ctx, applyAction.bind(null, ctx, args));
     // update state
-    doUpdate(namespace);
+    if (name !== ASN) doUpdate(name);
+    else doUpdate(ASN, args[0]);
 
     return ret;
   };
@@ -47,17 +59,17 @@ function createAction(namespace, action, handler) {
   return boundAction;
 }
 
-export function createActions(namespace, actions) {
-  invariant(isPlainObject(actions), `model[${namespace}].actions should be plain object!`);
+export function createActions(name, actions) {
+  invariant(isPlainObject(actions), `model[${name}].actions should be plain object!`);
 
   const newActions = {};
 
   Object.keys(actions).reduce((memo, action) => {
     const handler = actions[action];
 
-    invariant(isFunction(handler), `model[${namespace}].actions[${action}] should be function!`);
+    invariant(isFunction(handler), `model[${name}].actions[${action}] should be function!`);
 
-    memo[action] = createAction(namespace, action, handler);
+    memo[action] = createAction(name, action, handler);
 
     return memo;
   }, newActions);
@@ -65,37 +77,99 @@ export function createActions(namespace, actions) {
   return Object.freeze(newActions);
 }
 
-// access actions(call action out of Component is safe!)
-export function getActions(namespace) {
-  const context = getContextValue(namespace);
-
-  return context.actions;
-}
-
-export function useStatus(actionWithNamespace) {
+export function useStatus(actionWithName) {
   invariant(
-    actionWithNamespace && isString(actionWithNamespace),
-    'You must pass [namespace/action] to useStatus()',
+    actionWithName && isString(actionWithName),
+    'You must pass [name/action] to useStatus()',
   );
 
-  const Context = ContextMap.get(ACTION_STATUS_NAMESPACE);
+  const Context = getContext(ASN);
 
   invariant(Context, 'Please ensure the component is wrapped in a <Provider>');
 
-  useDebugValue(actionWithNamespace);
+  useDebugValue(actionWithName);
 
-  const { state } = useContext(Context);
+  const forceRender = useForceRender();
+  const store = useContext(Context);
+  const status = store.getState(s => s[actionWithName] || {});
+  const statusRef = useRef(status);
 
-  // init async action status when call `useStatus`
-  useEffect(() => {
-    const refState = getState(ACTION_STATUS_NAMESPACE);
+  useIsomorphicLayoutEffect(() => {
+    statusRef.current = status;
+  });
 
-    if (!refState[actionWithNamespace]) {
-      refState[actionWithNamespace] = DEFAULT_STATUS;
-      // state[actionWithNamespace] = DEFAULT_STATUS;
-      // getActions(ACTION_STATUS_NAMESPACE).set(actionWithNamespace, DEFAULT_STATUS);
+  useIsomorphicLayoutEffect(() => {
+    const prevState = store.getState();
+
+    // init async action status when call `useStatus`
+    if (!prevState[actionWithName]) {
+      prevState[actionWithName] = DEFAULT_STATUS;
     }
-  }, [actionWithNamespace]);
 
-  return state[actionWithNamespace] || {};
+    function checkStatus() {
+      const newStatus = store.getState(s => s[actionWithName]);
+      const { pending, error } = statusRef.current;
+
+      if (newStatus.pending === pending && error === newStatus.error) return;
+
+      statusRef.current = newStatus;
+
+      forceRender({});
+    }
+
+    return store.subscribe(actionWithName, checkStatus);
+  }, [actionWithName]);
+
+  return status;
 }
+
+/* export function useAction(name, action, ...args) {
+  const forceRender = useForceRender();
+  const Context = getContext(ASN);
+  const store = useContext(Context);
+  const actionWithName = `${name}/${action}`;
+  const status = store.getState(s => s[actionWithName] || {});
+  const statusRef = useRef(status);
+  const actions = getStore(name).actions;
+  const actionFn = actions[action];
+
+  // if (!status.pending) actionFn.apply(null, args);
+
+  useIsomorphicLayoutEffect(() => {
+    if (!status.pending) {
+      // (async () => await actionFn.apply(null, args));
+      actionFn.apply(null, args);
+    }
+    statusRef.current = { ...status };
+  });
+
+  useIsomorphicLayoutEffect(() => {
+    const prevState = store.getState();
+
+    // init async action status when call `useStatus`
+    if (!prevState[actionWithName]) {
+      prevState[actionWithName] = DEFAULT_STATUS;
+    }
+
+    function checkStatus() {
+      const newStatus = store.getState(s => s[actionWithName]);
+      const { pending, error, state } = statusRef.current;
+
+      if (
+        newStatus.pending === pending && 
+        newStatus.error === error && 
+        Object.is(state, newStatus.state)
+      ) return;
+
+      statusRef.current = newStatus;
+
+      forceRender({});
+    }
+
+    const unSubscribe = store.subscribe(actionWithName, checkStatus);
+
+    return unSubscribe;
+  }, [actionWithName]);
+
+  return status;
+} */

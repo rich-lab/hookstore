@@ -1,4 +1,4 @@
-import { useReducer } from 'react';
+import { useReducer, useEffect, useLayoutEffect } from 'react';
 import invariant from 'invariant';
 import isPlainObject from 'is-plain-object';
 
@@ -28,7 +28,6 @@ export function compose(funcs) {
       let fn = funcs[i];
 
       if (i === funcs.length) fn = next;
-      // console.log(i, fn);
 
       if (!fn) return Promise.resolve();
 
@@ -41,16 +40,6 @@ export function compose(funcs) {
 
     return dispatch(0);
   };
-
-  // return async (ctx, next) => {
-  //   const makeNext = (fn, next) => async () => await fn(ctx, next);
-
-  //   funcs.reverse().forEach(fn => {
-  //     next = makeNext(fn, next);
-  //   });
-
-  //   return await next();
-  // }
 }
 
 export function checkModels(props = {}) {
@@ -63,9 +52,9 @@ export function checkModels(props = {}) {
     invariant(models.length >= 1, 'should provide at last one model!');
 
     // for (const m of models) checkModel(m);
-    models.forEach(m => {
-      checkModel(m);
-    });
+    for (let i = 0; i < models.length; i++) {
+      checkModel(models[i]);
+    }
 
     return;
   }
@@ -76,10 +65,10 @@ export function checkModels(props = {}) {
 function checkModel(model) {
   invariant(isPlainObject(model), 'model should be plain object!');
 
-  const { namespace, state, actions /* , middlewares */ } = model;
+  const { name, state, actions /* , middlewares */ } = model;
 
-  invariant(namespace, 'model namespace is required!');
-  invariant(typeof namespace === 'string', 'model namespace should be string!');
+  invariant(name, 'model name is required!');
+  invariant(typeof name === 'string', 'model name should be string!');
 
   if (state) invariant(isPlainObject(state), 'model state should be plain object!');
 
@@ -92,6 +81,15 @@ export function checkMiddlewares(middlewares) {
   invariant(Array.isArray(middlewares), 'typeof middlewares should be array!');
 }
 
+export const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
 export function useForceRender() {
   return useReducer(c => c + 1, 0)[1];
+}
+
+export function tryClone(value) {
+  if (isPlainObject(value) || Array.isArray(value)) return JSON.parse(JSON.stringify(value));
+
+  return value;
 }

@@ -1,6 +1,6 @@
 // import invariant from 'invariant';
 
-import { checkMiddlewares } from './util';
+import { checkMiddlewares } from './utils';
 
 export let Middlewares = [];
 

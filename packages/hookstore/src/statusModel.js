@@ -1,14 +1,16 @@
-export const ACTION_STATUS_NAMESPACE = '@STATUS';
+import { getContextValue } from './context';
+
+export const ACTION_STATUS_NAME = '@STATUS';
 export const DEFAULT_STATUS = { pending: false, error: null };
 
 export const actionStatusModel = {
-  namespace: ACTION_STATUS_NAMESPACE,
+  name: ACTION_STATUS_NAME,
   state: {},
   actions: {
-    set(key, status) {
+    set(actionWithName, status) {
       const { state } = this.ctx;
 
-      state[key] = status;
+      state[actionWithName] = status;
     },
   },
 };

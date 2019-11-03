@@ -1,24 +1,53 @@
 import React, {
   createElement,
-  createContext,
+  memo,
   useContext,
   useEffect,
   useMemo,
   useRef,
-  useState,
   useDebugValue,
 } from 'react';
 import invariant from 'invariant';
-import clonedeep from 'lodash.clonedeep';
+import isEqual from 'lodash.isequal';
+// import clonedeep from 'lodash.clonedeep';
 
-import { isFunction, isString, checkModels } from './util';
+import {
+  isFunction,
+  isString,
+  checkModels,
+  useForceRender,
+  useIsomorphicLayoutEffect,
+  tryClone,
+} from './utils';
 import { actionStatusModel } from './statusModel';
-import { ContextMap } from './context';
-import { StateRefMap, getState } from './stateRef';
-import { createActions } from './action';
+import { getContext, createContext, deleteContext } from './context';
+import { createStore } from './store';
 import { applyMiddlewares } from './middlewares';
 
-export function Provider({ model, models, children }) {
+const StoreProvider = memo(({ model, children }) => {
+  const { name } = model;
+  const store = useMemo(() => createStore(model), [model]);
+
+  let Context = getContext(name);
+
+  if (!Context) {
+    Context = createContext(name, store);
+  }
+
+  useEffect(() => {
+    // cleanup
+    return () => {
+      deleteContext(name);
+      // reset middlewares
+      applyMiddlewares([]);
+    };
+  }, [name]);
+
+  return createElement(Context.Provider, { value: store }, children);
+});
+
+// Provider HOC
+export const Provider = memo(({ model, models, children }) => {
   checkModels({ model, models });
 
   models = models || (model ? [model] : []);
@@ -28,86 +57,63 @@ export function Provider({ model, models, children }) {
 
   let providers;
 
-  // create a Context for each model!
-  // for (const model of models) {
-  //   providers = <StoreProvider model={model}>{providers || children}</StoreProvider>;
-  // }
-  models.forEach(m => {
-    providers = <StoreProvider model={m}>{providers || children}</StoreProvider>;
-  });
+  // create a context for each model!
+  for (let i = 0; i < models.length; i++) {
+    providers = <StoreProvider model={models[i]}>{providers || children}</StoreProvider>;
+  }
 
   return providers;
-}
-
-function StoreProvider({ model, children }) {
-  const { namespace, state: initialState = {}, actions = {} } = model;
-  const [state, dispatch] = useState(initialState);
-  // const listenRef = useRef([]);
-  // const subscribe = useCallback(listener => {
-  //   listenRef.current.push(listener);
-
-  //   return () => {
-  //     listenRef.current = listenRef.current.filter(fn => fn !== listener);
-  //   };
-  // }, []);
-  const providerValue = {
-    state,
-    dispatch,
-    actions: useMemo(() => createActions(namespace, actions), [namespace, actions]),
-    // subscribe,
-  };
-
-  let Context = ContextMap.get(namespace);
-
-  if (!Context) {
-    Context = createContext(providerValue);
-    Context.displayName = namespace;
-    ContextMap.set(namespace, Context);
-  }
-
-  // update state in Context after every re-render
-  useEffect(() => {
-    Context._currentValue.state = state;
-  });
-
-  // for data diff
-  const stateRef = useRef(null);
-  if (!getState(namespace)) {
-    stateRef.current = clonedeep(initialState);
-    StateRefMap.set(namespace, stateRef);
-  }
-
-  useEffect(() => {
-    // clean
-    return () => {
-      ContextMap.delete(namespace);
-      StateRefMap.delete(namespace);
-      // reset middlewares
-      applyMiddlewares([]);
-    };
-  }, [namespace]);
-  // console.log('-------Provider render----');
-
-  return createElement(Context.Provider, { value: providerValue }, children);
-}
+});
 
 // access state in FC
 // compatible with `useSelector` in react-redux
-export function useStore(namespace, selector) {
-  invariant(namespace && isString(namespace), 'You must pass a namespace to useStore()');
+export function useStore(name, selector = s => s) {
+  invariant(name && isString(name), 'You must pass a name to useStore()');
+  invariant(selector && isFunction(selector), '`selector` should be function');
 
-  const Context = ContextMap.get(namespace);
-  const isFn = isFunction(selector);
+  const Context = getContext(name);
 
   invariant(
     Context,
-    `store with namespace[${namespace}] has not created, please ensure the component is wrapped in a <Provider>`,
+    `store with name[${name}] has not created, please ensure the component is wrapped in a <Provider>`,
   );
 
-  useDebugValue(namespace);
+  useDebugValue(name);
 
-  const { state, actions } = useContext(Context);
-  const selectedState = isFn ? selector(state) : state;
+  const forceRender = useForceRender();
+  const store = useContext(Context);
+  const ref = useRef({});
+  let value;
 
-  return useMemo(() => [selectedState, actions], [selectedState, actions]);
+  if (selector !== ref.current.selector) {
+    value = selector(store.getState());
+  } else {
+    value = ref.current.value;
+  }
+
+  useIsomorphicLayoutEffect(() => {
+    ref.current = {
+      selector,
+      value: tryClone(value),
+    };
+  });
+
+  useIsomorphicLayoutEffect(() => {
+    function checkForUpdates() {
+      const state = store.getState();
+      const prev = ref.current;
+      const newValue = prev.selector(state);
+
+      // console.log('-->prev.value: %j, newValue: %j', prev.value, newValue);
+      if (isEqual(newValue, prev.value)) return;
+
+      prev.value = newValue;
+
+      forceRender({});
+    }
+
+    return store.subscribe(checkForUpdates);
+  }, [store]);
+
+  return [value, store.actions];
 }
