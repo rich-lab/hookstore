@@ -122,53 +122,15 @@ export function useStatus(actionWithName) {
   return status;
 }
 
-/* export function useAction(name, action, ...args) {
-  const forceRender = useForceRender();
-  const Context = getContext(ASN);
-  const store = useContext(Context);
-  const actionWithName = `${name}/${action}`;
-  const status = store.getState(s => s[actionWithName] || {});
-  const statusRef = useRef(status);
-  const actions = getStore(name).actions;
-  const actionFn = actions[action];
-
-  // if (!status.pending) actionFn.apply(null, args);
-
-  useIsomorphicLayoutEffect(() => {
-    if (!status.pending) {
-      // (async () => await actionFn.apply(null, args));
-      actionFn.apply(null, args);
-    }
-    statusRef.current = { ...status };
-  });
-
-  useIsomorphicLayoutEffect(() => {
-    const prevState = store.getState();
-
-    // init async action status when call `useStatus`
-    if (!prevState[actionWithName]) {
-      prevState[actionWithName] = DEFAULT_STATUS;
-    }
-
-    function checkStatus() {
-      const newStatus = store.getState(s => s[actionWithName]);
-      const { pending, error, state } = statusRef.current;
-
-      if (
-        newStatus.pending === pending && 
-        newStatus.error === error && 
-        Object.is(state, newStatus.state)
-      ) return;
-
-      statusRef.current = newStatus;
-
-      forceRender({});
-    }
-
-    const unSubscribe = store.subscribe(actionWithName, checkStatus);
-
-    return unSubscribe;
-  }, [actionWithName]);
-
-  return status;
-} */
+/**
+ * @see https://github.com/zeit/swr
+ * @description call async action and listen status
+ * function Foo() {
+ *    const { pending, data } = useAction('foo/asyncSet', options);
+ *
+ *    return pending ? <div>loading...</div> : <div>{data}</div>;
+ * }
+ */
+// export function useAction(name, action, ...args) {
+//   ;
+// }
