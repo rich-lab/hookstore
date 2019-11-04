@@ -42,8 +42,8 @@ export interface Context<S = State> {
   getStore: (name?: string, selector?: StateSelector<S>) => [ any, Actions ],
   // getStore: (name?: string) => Store,
   // getState: <V extends any>(name?: string, selector?: StateSelector<S, V>) => V,
-  // flush the changed state to DOM(inside action handler) before action run finished
-  flush: (msg?: string) => void,
+  // fresh the changed state to DOM(inside action handler) before action run finished
+  fresh: (msg?: string) => void,
 }
 
 export type Next = () => Promise<any>;

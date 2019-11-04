@@ -57,14 +57,13 @@ export function createCtx(name, action) {
     },
     // get current state
     get state() {
-      // return getStore(name).getState();
       return getStore(name)[0];
     },
     // get current actions map
     get actions() {
       return getContextValue(name).actions;
-      // return getStore(name)[1];
     },
+    // access other store
     getStore(modelName, selector) {
       if (isFunction(modelName)) {
         selector = modelName;
@@ -73,9 +72,9 @@ export function createCtx(name, action) {
 
       return getStore(modelName || name, selector);
     },
-    // frush state and make components re-render!
-    flush(msg) {
-      if (msg) console.log(`[flush] ${name}/${action}`, msg);
+    // fresh state changes right now!
+    fresh(msg) {
+      if (msg) console.log(`[fresh] ${name}/${action}`, msg);
       doUpdate(name);
     },
   };

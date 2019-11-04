@@ -668,7 +668,7 @@ describe('#basic usage', () => {
     expect(countNode.textContent).toEqual('count:2');
   });
 
-  it('flush should work', async () => {
+  it('fresh should work', async () => {
     const jestFn = jest.fn();
     const modelList = {
       name: 'list',
@@ -678,12 +678,12 @@ describe('#basic usage', () => {
       },
       actions: {
         async load() {
-          const { state, flush } = this.ctx;
+          const { state, fresh } = this.ctx;
           
           if (state.loading) return;
 
           state.loading = true;
-          flush();
+          fresh('fresh state right now!');
 
           await wait(100);
 
