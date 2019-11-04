@@ -1,6 +1,6 @@
 {
   "name": "hookstore",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "React Hook based and lightweight state manage library.",
   "main": "lib/index.js",
   "module": "es/index.js",
