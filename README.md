@@ -17,7 +17,7 @@ React Hooks based and lightweight state manage library.
 
 - **Minimal(only 5 APIs) and simplified API**: easy to learn(5 minutes about), no `reducer`, `dispatch` or `effects` in Redux/dva, only `action` which is just normal function with `async/await` support.
 - **Centralized state management and multiple models**: `model` is just normal javascript object, `state` inside `action`(and `middleware`)is mutatable for understanding while immutatable inside components(follow the design of React's unidirectional data flow).
-- **Performance optimized**: `useStore` api is inspired by react-redux([useSelector](https://react-redux.js.org/api/hooks#useselector)), the [preformance issue caused by useContext](https://github.com/facebook/react/issues/15156) is controlled, only component(s) which used `useStore` hook will be re-rendered when state changed. 
+- **Performance optimized**: `useStore` api is inspired by react-redux-hooks [useSelector](https://react-redux.js.org/api/hooks#useselector), the [preformance issue caused by useContext](https://github.com/facebook/react/issues/15156) is controlled, only component(s) which used `useStore` hook will be re-rendered when state changed. 
 - **Built-in action status listening**: Listening `pending` and `error` status of (async)action and update to DOM in real time when action's status change.
 - **[koa](https://github.com/koajs/koa#middleware) style middleware system**
 
