@@ -89,7 +89,8 @@ export function useForceRender() {
 }
 
 export function tryClone(value) {
-  if (isPlainObject(value) || Array.isArray(value)) return JSON.parse(JSON.stringify(value));
+  if (isPlainObject(value)) return JSON.parse(JSON.stringify(value));
+  if (Array.isArray(value)) return value.slice();
 
   return value;
 }
