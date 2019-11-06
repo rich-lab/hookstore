@@ -12,7 +12,7 @@
     "debug": "umi-test",
     "precommit": "lint-staged",
     "md": "sh scripts/md.sh",
-    "publish": "npm run build && npm run md && lerna publish",
+    "publish": "npm run md && lerna publish",
     "bootstrap": "lerna bootstrap",
     "link": "lerna link"
   },
