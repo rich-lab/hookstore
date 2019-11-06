@@ -9,7 +9,6 @@ import React, {
 } from 'react';
 import invariant from 'invariant';
 import isEqual from 'lodash.isequal';
-// import clonedeep from 'lodash.clonedeep';
 
 import {
   isFunction,
@@ -35,11 +34,9 @@ const StoreProvider = memo(({ model, children }) => {
   }
 
   useEffect(() => {
-    // cleanup
+    // cleanup context
     return () => {
       deleteContext(name);
-      // reset middlewares
-      applyMiddlewares([]);
     };
   }, [name]);
 
@@ -61,6 +58,13 @@ export const Provider = memo(({ model, models, children }) => {
   for (let i = 0; i < models.length; i++) {
     providers = <StoreProvider model={models[i]}>{providers || children}</StoreProvider>;
   }
+
+  useEffect(() => {
+    // reset global middlewares
+    return () => {
+      applyMiddlewares([]);
+    };
+  }, []);
 
   return providers;
 });
