@@ -8,7 +8,7 @@
 [![NPM downloads](http://img.shields.io/npm/dm/hookstore.svg?style=flat)](https://npmjs.org/package/hookstore)
 ![React](https://img.shields.io/npm/dependency-version/hookstore/peer/react?logo=react)
 
-基于React Hooks的轻量级状态管理方案。
+基于React Hooks的轻量级中心化数据管理方案。
 
 ## 在线查看demo
 [![Edit](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/hookstore-counter-wbdh1)

@@ -8,7 +8,7 @@ English | [简体中文](./README.zh-CN.md)
 [![NPM downloads](http://img.shields.io/npm/dm/hookstore.svg?style=flat)](https://npmjs.org/package/hookstore)
 ![React](https://img.shields.io/npm/dependency-version/hookstore/peer/react?logo=react)
 
-React Hooks based and lightweight state manage library.
+Hook based and lightweight centralized state management for React.
 
 ## Try it on codesandbox
 [![Edit](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/hookstore-counter-wbdh1)
