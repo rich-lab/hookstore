@@ -6,6 +6,7 @@ English | [简体中文](./README.zh-CN.md)
 [![Build Status](https://img.shields.io/travis/react-kit/hookstore.svg?style=flat)](https://travis-ci.org/react-kit/hookstore)
 [![Coverage Status](https://img.shields.io/coveralls/react-kit/hookstore.svg?style=flat)](https://coveralls.io/r/react-kit/hookstore)
 [![NPM downloads](http://img.shields.io/npm/dm/hookstore.svg?style=flat)](https://npmjs.org/package/hookstore)
+[![size](https://badgen.net/bundlephobia/minzip/hookstore@latest)](https://bundlephobia.com/result?p=hookstore@latest)
 ![React](https://img.shields.io/npm/dependency-version/hookstore/peer/react?logo=react)
 
 Hook based and lightweight centralized state management for React.

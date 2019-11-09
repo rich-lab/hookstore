@@ -6,6 +6,7 @@
 [![Build Status](https://img.shields.io/travis/react-kit/hookstore.svg?style=flat)](https://travis-ci.org/react-kit/hookstore)
 [![Coverage Status](https://img.shields.io/coveralls/react-kit/hookstore.svg?style=flat)](https://coveralls.io/r/react-kit/hookstore)
 [![NPM downloads](http://img.shields.io/npm/dm/hookstore.svg?style=flat)](https://npmjs.org/package/hookstore)
+[![size](https://badgen.net/bundlephobia/minzip/hookstore@latest)](https://bundlephobia.com/result?p=hookstore@latest)
 ![React](https://img.shields.io/npm/dependency-version/hookstore/peer/react?logo=react)
 
 基于React Hooks的轻量级中心化数据管理方案。
