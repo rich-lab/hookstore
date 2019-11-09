@@ -38,5 +38,8 @@
     "es",
     "src",
     "index.d.ts"
-  ]
+  ],
+  "devDependencies": {
+    "lodash.isequal": "^4.5.0"
+  }
 }
