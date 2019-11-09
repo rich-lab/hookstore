@@ -69,54 +69,20 @@ export default {
 }
 ```
 
-```javascript
-// src/models/list.js
-export default {
-  name: 'list',
-  state: {
-    list: [],
-  },
-  actions: {
-    async addItems(len) {
-      const { state } = this.ctx;
-      const newList = await fetchList(len);
-
-      state.list = newList;
-    },
-
-    async addByCount() {
-      const { state, actions, getStore } = this.ctx;
-      const [ count, countActions ] = getStore('count', s => s.count); // access other store by getStore(modelName)
-
-      if (count <= 0) return console.warn(`count ${count}!`);
-
-      const newList = await fetchList(count);
-
-      state.list = newList;
-      countActions.add(1); // call count action
-    },
-  },
-};
-```
-
 ### 2. model(s)绑定
 
 ```javascript
 import { Provider } from 'hookstore';
 
 import countModel from './models/count';
-import listModel from './models/list';
 
 import Counter from './src/components/Counter';
 import List from './src/components/List';
 
 ReactDOM.render(
-  <Provider models={[ countModel, listModel ]}>
-    <h2>Counter</h2>
+  <Provider model={countModel}>
     <Counter />
     <Counter />
-    <h2>List</h2>
-    <List />
   </Provider>
   , document.getElementById('root')
 );
@@ -142,34 +108,6 @@ export default () => {
 }
 ```
 
-监听action的执行状态，目前包含`pending`和`error`两种状态，`abort`暂未支持。
-
-```javascript
-// src/components/List.js
-import { useStore, useStatus } from 'hookstore';
-
-export default () => {
-  const [ state, actions ] = useStore('list');
-  const { pending, error} = useStatus('list/addItems');
-  const addItems = () => {
-    if (pending) return console.log('pls wait...');
-    actions.addItems(5);
-  };
-
-  return (
-    <div>
-      {Math.random()}
-      <div>
-        { pending && <div>loading...<div> }
-        { error && <div>{error.message}<div> }
-        <div>List items: {state.list.join()}</div>
-        <button onClick={addItems}>async add 5 items</button>
-      </div>
-    </div>
-  );
-};
-```
-
 ## API
 
 ### `<Provider models>`
@@ -186,15 +124,20 @@ const Root = () => (
 ReactDOM.render(<Root />, document.getElementById('root'));
 ```
 
-### useStore(name[, selector = state => state]) => [ selectedState, actions ]
+### useStore(name, selector?: Function, equalityFn?: Function) => [ selectedValue, actions ]
 
-自定义hook，以元组的形式返回store中最新的state和可安全修改state的actions方法集合。`useStore`整合了react-redux `useSelector()`和`useDispatch()`两个hook的功能，**强烈推荐传入`selector`按需选择所需state**，只有被选择的state改变时组件才会re-render。
+自定义hook，以元组的形式返回store中最新的state和可安全修改state的actions方法集合。`useStore`整合了react-redux `useSelector()`和`useDispatch()`两个hook。
 
-> 1、直接修改此处的state是不安全的（修改不会被同步更新到组件），只有action函数和中间对state的修改是安全的！<br />2、actions是一个不可变对象，这意味着可以直接将actions直接传递给子组件而不会引起重新渲染、useMemo或useCallback的deps也无需将actions作为依赖项。
+- name: model名称
+- selector：用于从store里提取所需数据的一个纯函数（不传则返回整个state对象），**强烈推荐传入`selector`按需提取数据**，这样可以保证只有被提取的state值改变时组件才会re-render
+- equalityFn：前后两次提取的state值对比函数，只有值改变才会re-render组件，默认效果和react-redux的connect一致（即浅比较），如果需要进行对象的深比较可以考虑使用三方库，如`lodash.isEqual`
+
+> 1、直接修改返回的state是不安全的（修改不会被同步更新到组件），只有action函数和中间对state的修改是安全的！<br />2、actions是一个不可变对象，这意味着可以直接将actions直接传递给子组件而不会引起重新渲染、useMemo或useCallback的deps也无需将actions作为依赖项。
 
 ```javascript
 const Component = () => {
   const [ name, actions ] = useStore('foo', s => s.name);
+  const [ nested, actions ] = useStore('bar', s => s.nested, _.isEqual);
   // ...
 };
 ```
@@ -204,10 +147,29 @@ const Component = () => {
 `useStatus` hook，用于监听（异步）action的执行状态，返回`pending`和`error`两个状态，当action正在执行时`pending=true`，当执行出错时`error`为具体错误对象，当执行状态发生变化时会同步更新到DOM。
 
 ```javascript
-const Component = () => {
-  const { pending, error } = useStatus('foo/someAsyncAction');
-  // ...
-}
+// src/components/CounterWithLoading.js
+import { useStore, useStatus } from 'hookstore';
+
+const CounterWithLoading = () => {
+  const [ { count }, actions ] = useStore('count', s => c.count);
+  const { pending, error } = useStatus('count/asyncAdd');
+  const asyncAdd = () => {
+    if (pending) return console.log('pls wait...');
+    actions.asyncAdd(5);
+  };
+
+  return (
+    <div>
+      {Math.random()}
+      <div>
+        { pending && <div>loading...<div> }
+        { error && <div>{error.message}<div> }
+        <div>count: {count}</div>
+        <button onClick={asyncAdd}>async add 5</button>
+      </div>
+    </div>
+  );
+};
 ```
 
 ### getStore(name[, selector = state => state]) => [ selectedState, actions ]

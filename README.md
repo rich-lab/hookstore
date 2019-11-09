@@ -69,36 +69,6 @@ export default {
 }
 ```
 
-```javascript
-// src/models/list.js
-export default {
-  name: 'list',
-  state: {
-    list: [],
-  },
-  actions: {
-    async addItems(len) {
-      const { state } = this.ctx;
-      const newList = await fetchList(len);
-
-      state.list = newList;
-    },
-
-    async addByCount() {
-      const { state, actions, getStore } = this.ctx;
-      const [ count, countActions ] = getStore('count', s => s.count);
-
-      if (count <= 0) return console.warn(`count ${count}!`);
-
-      const newList = await fetchList(count);
-
-      state.list = newList;
-      countActions.add(1); // call count action
-    },
-  },
-};
-```
-
 ### 2. model(s) initialization
 
 ```javascript
@@ -108,15 +78,11 @@ import countModel from './models/count';
 import listModel from './models/list';
 
 import Counter from './src/components/Counter';
-import List from './src/components/List';
 
 ReactDOM.render(
-  <Provider models={[ countModel, listModel ]}>
-    <h2>Counter</h2>
+  <Provider models={[ countModel ]}>
     <Counter />
     <Counter />
-    <h2>List</h2>
-    <List />
   </Provider>
   , document.getElementById('root')
 );
@@ -142,34 +108,6 @@ export default () => {
 }
 ```
 
-Listening the executing status of actions, such as `pending` if pending or `error` whenever if exception is thrown.
-
-```javascript
-// src/components/List.js
-import { useStore, useStatus } from 'hookstore';
-
-export default () => {
-  const [ state, actions ] = useStore('list');
-  const { pending, error} = useStatus('list/addItems');
-  const addItems = () => {
-    if (pending) return console.log('pls wait....');
-    actions.addItems(5);
-  };
-
-  return (
-    <div>
-      {Math.random()}
-      <div>
-        { pending && <div>loading...<div> }
-        { error && <div>{error.message}<div> }
-        <div>List items: {state.list.join()}</div>
-        <button onClick={addItems}>async add 5 items</button>
-      </div>
-    </div>
-  );
-};
-```
-
 ## API
 
 ### `<Provider models>`
@@ -186,13 +124,18 @@ const Root = () => (
 ReactDOM.render(<Root />, document.getElementById('root'));
 ```
 
-### useStore(name[, selector = state => state]) => [ selectedState, actions ]
+### useStore(name, selector?: Function, equalityFn?: Function) => [ selectedState, actions ]
 
-Returns the latest state in store and the collect of actions methods(which can safely modify store's state) by tuples.**It's highly recommended to pass in `selector` as the second param** to select state in need, components will re-render only if the selected keys changes.
+`useStore` integrated the `useSelector` and `useDispatch()` Apis in [react-redux v7.x](https://react-redux.js.org/next/api/hooks#useselector), it returns the latest state in store and the collect of actions methods(which can safely modify store's state) by tuples.
+
+- name: The name of model
+- selector: Pure function with which can extract data from store, the default value is `(state) => state` which will returns the state object in store.**It's highly recommended to pass in `selector`** to select state in need, components will re-render only if the selected keys changes.
+- equalityFn: the default value is the same as `connect` of react-redux, optional comparison function also enables using something like Lodash's `_.isEqual()`.
 
 ```javascript
 const Component = () => {
   const [ name, actions ] = useStore('foo', s => s.name);
+  const [ nested, actions ] = useStore('bar', s => s.nested, _.isEqual);
   // ...
 };
 ```
@@ -202,13 +145,32 @@ const Component = () => {
 `useStatus` hook listens the execution status of (asynchronous)actions in real time, and all components used `useStatus` hook will receive the actions status update and then render to the DOM.
 
 ```javascript
-const Component = () => {
-  const { pending, error } = useStatus('foo/someAsyncAction');
-  // ...
-}
+// src/components/CounterWithLoading.js
+import { useStore, useStatus } from 'hookstore';
+
+const CounterWithLoading = () => {
+  const [ { count }, actions ] = useStore('count', s => c.count);
+  const { pending, error } = useStatus('count/asyncAdd');
+  const asyncAdd = () => {
+    if (pending) return console.log('pls wait...');
+    actions.asyncAdd(5);
+  };
+
+  return (
+    <div>
+      {Math.random()}
+      <div>
+        { pending && <div>loading...<div> }
+        { error && <div>{error.message}<div> }
+        <div>count: {count}</div>
+        <button onClick={asyncAdd}>async add 5</button>
+      </div>
+    </div>
+  );
+};
 ```
 
-### getStore(name[, selector = state => state]) => [ selectedState, actions ]
+### getStore(name, selector?: Function) => [ selectedState, actions ]
 
 The params and returns of `getStore` is the same as `useStore`, the difference is that `getStore` is not a React Hook, it;'s just a normal function, so the usage of `getStore` is not restricted by Hook Rules(maybe outside of React components), but you should known that `useStore` can not listen the changes of state, you should call `useStore` again to get the lastest state.
 
