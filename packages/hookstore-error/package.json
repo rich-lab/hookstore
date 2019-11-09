@@ -1,6 +1,6 @@
 {
   "name": "hookstore-error",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "simple error handler middleware for hookstore",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -8,7 +8,7 @@
   "sideEffects": false,
   "dependencies": {
     "@babel/runtime": "^7.7.2",
-    "hookstore": "^0.2.0"
+    "hookstore": "^0.2.3"
   },
   "keywords": [
     "hookstore",
