@@ -8,7 +8,6 @@ import React, {
   useDebugValue,
 } from 'react';
 import invariant from 'invariant';
-import isEqual from 'lodash.isequal';
 
 import {
   isFunction,
@@ -17,6 +16,7 @@ import {
   useForceRender,
   useIsomorphicLayoutEffect,
   tryClone,
+  shallowEqual,
 } from './utils';
 import { actionStatusModel } from './statusModel';
 import { getContext, createContext, deleteContext } from './context';
@@ -109,7 +109,7 @@ export function useStore(name, selector = s => s) {
       const newValue = prev.selector(state);
 
       // console.log('-->prev.value: %j, newValue: %j', prev.value, newValue);
-      if (isEqual(newValue, prev.value)) return;
+      if (shallowEqual(newValue, prev.value)) return;
 
       prev.value = newValue;
 
