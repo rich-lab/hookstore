@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, fireEvent, waitForElement, cleanup } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
+import isEqual from 'lodash.isequal';
 
 // import { getActions } from '../src/action';
 import { Provider, useStore } from '../src/provider';
@@ -10,13 +11,6 @@ import { applyMiddlewares } from '../src/middlewares';
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms || 1));
 
 describe('#basic usage', () => {
-  // let renderedItems = [];
-  // let forceRender;
-
-  // beforeEach(() => {
-  //   forceRender = null;
-  //   renderedItems = [];
-  // });
   afterEach(cleanup);
 
   it('should throw', async () => {
@@ -56,7 +50,7 @@ describe('#basic usage', () => {
     expect(jestFn).toHaveBeenCalledTimes(1);
 
     fireEvent.click(aNode);
-
+    await act(async () => { await wait(30); });
     aNode = await waitForElement(() => getByTestId('a'));
 
     expect(aNode.textContent).toEqual('a:1');
@@ -136,7 +130,7 @@ describe('#basic usage', () => {
     expect(jestFnC).toHaveBeenCalledTimes(1);
 
     fireEvent.click(aNode);
-
+    await act(async () => { await wait(30); });
     [ aNode, bNode, cNode ] = await waitForElement(() => [getByTestId('a'), getByTestId('b'), getByTestId('c')]);
 
     expect(aNode.textContent).toEqual('a:1');
@@ -148,6 +142,7 @@ describe('#basic usage', () => {
     expect(jestFnC).toHaveBeenCalledTimes(2);
 
     fireEvent.click(bNode);
+    await act(async () => { await wait(30); });
     [ aNode, bNode, cNode ] = await waitForElement(() => [getByTestId('a'), getByTestId('b'), getByTestId('c')]);
 
     expect(aNode.textContent).toEqual('a:1');
@@ -199,16 +194,15 @@ describe('#basic usage', () => {
     expect(jestFn).toHaveBeenCalledTimes(1);
 
     fireEvent.click(aNode);
-
+    await act(async () => { await wait(30); });
     aNode = await waitForElement(() => getByTestId('a'));
 
     expect(aNode.textContent).toEqual('a:1');
     expect(jestFn).toHaveBeenCalledTimes(2);
 
     fireEvent.click(bNode);
-
     // @see https://github.com/facebook/react/issues/14769
-    await act(async () => await wait(15));
+    await act(async () => await wait(100));
 
     expect(aNode.textContent).toEqual('a:2');
     expect(bNode.textContent).toEqual('b:1');
@@ -259,7 +253,6 @@ describe('#basic usage', () => {
     expect(aNode.textContent).toEqual('a:0,arr:');
 
     fireEvent.click(aNode);
-
     aNode = await waitForElement(() => getByTestId('a'));
 
     expect(aNode.textContent).toEqual('a:1,arr:1,3,4,2');
@@ -287,14 +280,10 @@ describe('#basic usage', () => {
       },
     ];
 
-    const App = () => {
-      return <div>ttt</div>;
-    };
-
     const Test = () => {
       applyMiddlewares(middlewares);
 
-      return <Provider model={model}><App /></Provider>;
+      return <Provider model={model}><div>ttt</div>;</Provider>;
     };
     
     render(<Test />);
@@ -412,7 +401,7 @@ describe('#basic usage', () => {
       }
     };
     const A = () => {
-      const [ { foo, biz }, actions ] = useStore('a');
+      const [ { foo, biz }, actions ] = useStore('a', s => s, isEqual);
 
       jestFn();
 
@@ -424,14 +413,7 @@ describe('#basic usage', () => {
         </>
       );
     };
-    const App = () => {
-      return (
-        <Provider model={modelA}>
-          <A />
-        </Provider>
-      );
-    };
-    const { getByTestId } = render(<App />);
+    const { getByTestId } = render(<Provider model={modelA}><A /></Provider>);
     const barNode = getByTestId('bar');
     const bizNode = getByTestId('biz');
 
@@ -440,6 +422,7 @@ describe('#basic usage', () => {
     expect(jestFn).toHaveBeenCalledTimes(1);
 
     fireEvent.click(getByTestId('rewrite'));
+    await act(async () => { await wait(10); });
 
     expect(barNode.textContent).toEqual('bar:aaa');
     expect(bizNode.textContent).toEqual('biz:ttt');
@@ -476,14 +459,7 @@ describe('#basic usage', () => {
         </>
       );
     };
-    const App = () => {
-      return (
-        <Provider model={model}>
-          <A />
-        </Provider>
-      );
-    };
-    const { getByTestId } = render(<App />);
+    const { getByTestId } = render(<Provider model={model}><A /></Provider>);
     const [ , actions ] = getStore('t');
     let bNode = getByTestId('b');
 
@@ -491,9 +467,8 @@ describe('#basic usage', () => {
     expect(jestFn1).toHaveBeenCalledTimes(1);
     expect(jestFn2).toHaveBeenCalledTimes(1);
 
-    act(() => {
-      actions.setA();
-    });
+    actions.setA();
+    await act(async () => { await wait(100); });
 
     expect(bNode.textContent).toEqual('b:10');
     expect(getStore('t', s => s.a)[0]).toEqual(2);
@@ -603,6 +578,7 @@ describe('#basic usage', () => {
     fireEvent.click(aNode);
     fireEvent.click(aNode);
     [ aNode, bNode ] = await waitForElement(() => [ getByTestId('a'), getByTestId('b') ]);
+    await act(async () => { await wait(10); });
 
     expect(aNode.textContent).toEqual('arr:1,2');
     expect(bNode.textContent).toEqual('b:2');
@@ -642,14 +618,7 @@ describe('#basic usage', () => {
         </>
       );
     };
-    const App = () => {
-      return (
-        <Provider models={[ countModel ]}>
-          <Counter />
-        </Provider>
-      );
-    };
-    const { getByTestId } = render(<App />);
+    const { getByTestId } = render(<Provider models={[ countModel ]}><Counter /></Provider>);
     let countNode = getByTestId('count');
 
     expect(countNode.textContent).toEqual('count:0');
@@ -704,10 +673,7 @@ describe('#basic usage', () => {
         </>
       );
     };
-    const App = () => {
-      return <Provider models={[ modelList ]}><List /></Provider>;
-    };
-    const { getByTestId } = render(<App />);
+    const { getByTestId } = render(<Provider models={[ modelList ]}><List /></Provider>);
     let aNode = getByTestId('loading');
     let bNode = getByTestId('list');
 
