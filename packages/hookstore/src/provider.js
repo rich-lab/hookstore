@@ -71,7 +71,7 @@ export const Provider = memo(({ model, models, children }) => {
 
 // access state in FC
 // compatible with `useSelector` in react-redux
-export function useStore(name, selector = s => s) {
+export function useStore(name, selector = s => s, equalityFn = shallowEqual) {
   invariant(name && isString(name), 'You must pass a name to useStore()');
   invariant(selector && isFunction(selector), '`selector` should be function');
 
@@ -109,7 +109,7 @@ export function useStore(name, selector = s => s) {
       const newValue = prev.selector(state);
 
       // console.log('-->prev.value: %j, newValue: %j', prev.value, newValue);
-      if (shallowEqual(newValue, prev.value)) return;
+      if (equalityFn(newValue, prev.value)) return;
 
       prev.value = newValue;
 

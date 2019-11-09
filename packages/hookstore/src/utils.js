@@ -6,7 +6,7 @@ export { isPlainObject };
 
 export const isString = str => typeof str === 'string';
 export const isFunction = fn => typeof fn === 'function';
-// export const isObject = obj => obj && typeof obj === 'object' && !Array.isArray(obj);
+// export const isObject = obj => typeof obj === 'object' && !Array.isArray(obj);
 export const isPromise = obj => obj instanceof Promise && isFunction(obj.then);
 
 // @see https://github.com/koajs/compose/
@@ -105,7 +105,7 @@ function is(x, y) {
   return x !== x && y !== y;
 }
 
-// copy from react-redux
+// @see react-redux
 export function shallowEqual(objA, objB) {
   if (is(objA, objB)) return true;
 
