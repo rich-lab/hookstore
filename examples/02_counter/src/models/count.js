@@ -36,16 +36,15 @@ export default {
       // console.log('state after effect', state);
     },
     async printCountAsync() {
-      const { getState } = this.ctx;
-      const countState = getState('count');
-      const count1 = countState.count;
+      const { getStore } = this.ctx;
+      const [count1] = getStore('count', s => s.count);
 
       await new Promise(resolve => {
         setTimeout(resolve, 2000);
       });
 
-      // const countState = getState('count');
-      console.log(`count1:${count1} count2:${countState.count}`);
+      const [count2] = getStore('count', s => s.count);
+      console.log(`count1:${count1} count2:${count2}`);
     },
   },
 };
