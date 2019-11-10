@@ -1,6 +1,6 @@
 {
   "name": "hookstore",
-  "version": "0.2.5-alpha-3",
+  "version": "0.2.5",
   "description": "Hook based and lightweight centralized state management for React.",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",

@@ -1,6 +1,6 @@
 {
   "name": "hookstore-logger",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "simple logger middleware for hookstore",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
