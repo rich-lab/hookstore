@@ -2,20 +2,18 @@
   "name": "hookstore-logger",
   "version": "0.2.1",
   "description": "simple logger middleware for hookstore",
-  "main": "lib/index.js",
-  "module": "es/index.js",
-  "types": "lib/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
   "sideEffects": false,
   "dependencies": {
-    "@babel/runtime": "^7.7.2",
     "@types/deep-diff": "^1.0.0",
     "deep-diff": "^1.0.2",
     "hookstore": "^0.2.3",
     "is-plain-object": "^3.0.0"
   },
   "files": [
-    "lib",
-    "es",
+    "dist",
     "src",
     "README.md"
   ],

@@ -1,13 +1,12 @@
 {
   "compilerOptions": {
-    "strict": true,
+    "sourceMap": false,
     "module": "esnext",
-    "target": "esnext",
-    "lib": ["dom", "es2017"],
-    "jsx": "preserve",
+    "target": "es6",
+    "jsx": "react",
     "declaration": true,
     "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true
+    "lib": ["es6", "dom"]
   },
   "exclude": [
     "examples",
@@ -15,6 +14,7 @@
     "**/node_modules",
     "**/lib",
     "**/es",
+    "**/dist",
     "**/test"
   ]
 }

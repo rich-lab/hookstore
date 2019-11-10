@@ -1,9 +1,9 @@
 {
   "name": "hookstore",
-  "version": "0.2.4",
-  "description": "React Hook based and lightweight state manage library.",
-  "main": "lib/index.js",
-  "module": "es/index.js",
+  "version": "0.2.5-alpha-3",
+  "description": "Hook based and lightweight centralized state management for React.",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
   "types": "index.d.ts",
   "sideEffects": false,
   "repository": {
@@ -25,7 +25,6 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@babel/runtime": "^7.7.2",
     "invariant": "^2.2.4",
     "is-plain-object": "^3.0.0"
   },
@@ -34,8 +33,7 @@
     "react-dom": ">=16.8.0"
   },
   "files": [
-    "lib",
-    "es",
+    "dist",
     "src",
     "index.d.ts"
   ],
