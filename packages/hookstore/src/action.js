@@ -16,7 +16,7 @@ import { Middlewares } from './middlewares';
 
 function createAction(name, action, handler) {
   // const context = createCtx(name, action);
-  const applyAction = async (ctx, args) => {
+  async function applyAction(ctx, args) {
     // return await handler.apply({ ctx }, args);
     const actionWithName = `${name}/${action}`;
     const [prevStatus, actions] = getStore(ASN, s => s[actionWithName]);
@@ -42,8 +42,9 @@ function createAction(name, action, handler) {
     }
 
     return ret;
-  };
-  const boundAction = async (...args) => {
+  }
+
+  return async function boundAction(...args) {
     const ctx = createCtx(name, action);
     const middlewares = Middlewares.slice();
     // call middlewares by queue
@@ -54,8 +55,6 @@ function createAction(name, action, handler) {
 
     return ret;
   };
-
-  return boundAction;
 }
 
 export function createActions(name, actions) {
@@ -121,16 +120,3 @@ export function useStatus(actionWithName) {
 
   return status;
 }
-
-/**
- * @see https://github.com/zeit/swr
- * @description call async action and listen status
- * function Foo() {
- *    const { pending, data } = useAction('foo/asyncSet', options);
- *
- *    return pending ? <div>loading...</div> : <div>{data}</div>;
- * }
- */
-// export function useAction(name, action, ...args) {
-//   ;
-// }

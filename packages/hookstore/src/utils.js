@@ -17,7 +17,7 @@ export function compose(funcs) {
     invariant(isFunction(fn), 'Middleware must be composed of functions!');
   });
 
-  return (ctx, next) => {
+  return function goNext(ctx, next) {
     let index = -1;
 
     function dispatch(i) {
